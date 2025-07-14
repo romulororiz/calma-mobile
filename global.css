@@ -1,0 +1,98 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Aurora Glass Design System - Essential Styles */
+@layer components {
+  .glass-card {
+    @apply bg-surface-glass rounded-lg border border-white/5;
+  }
+
+  .glass-card-primary {
+    @apply bg-surface-primary border-aurora-start/10;
+  }
+
+  .glass-card-elevated {
+    @apply bg-surface-elevated;
+  }
+
+  .glass-card-emergency {
+    @apply bg-surface-emergency border-aurora-mid/20;
+  }
+
+  /* Aurora Button */
+  .aurora-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold;
+  }
+
+  .aurora-btn-primary {
+    @apply bg-aurora-start text-white;
+  }
+
+  .aurora-btn-secondary {
+    @apply bg-surface-glass text-text-primary border border-white/10;
+  }
+
+  /* Emotion Buttons */
+  .emotion-btn {
+    @apply bg-surface-glass flex h-20 w-20 items-center justify-center rounded-lg border-2 border-transparent text-4xl;
+  }
+
+  .emotion-btn-selected {
+    @apply border-aurora-start;
+  }
+
+  /* Context Pills */
+  .context-pill {
+    @apply bg-surface-glass inline-flex items-center gap-2 rounded-full border border-white/5 px-4 py-2 text-sm;
+  }
+
+  .context-pill-selected {
+    @apply bg-aurora-start border-transparent text-white;
+  }
+
+  /* Navigation Items */
+  .nav-item {
+    @apply text-text-secondary flex flex-col items-center px-4 py-2;
+  }
+
+  .nav-item-active {
+    @apply text-aurora-start;
+  }
+
+  /* ADHD-friendly styles */
+  .adhd-focus {
+    @apply focus:ring-aurora-start focus:outline-none focus:ring-2 focus:ring-opacity-50;
+  }
+
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .gentle-hover {
+    @apply duration-normal transition-all;
+  }
+}
+
+/* Simple animations */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes gentle-pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
