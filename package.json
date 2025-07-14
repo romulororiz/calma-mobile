@@ -7,6 +7,7 @@
     "start": "expo start",
     "prebuild": "expo prebuild",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
+    "lint:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "web": "expo start --web"
   },
@@ -16,6 +17,7 @@
     "@react-navigation/native": "^7.1.14",
     "@react-navigation/stack": "^7.4.2",
     "@types/react": "19.0.14",
+    "date-fns": "^4.1.0",
     "expo": "^53.0.19",
     "expo-av": "^15.1.7",
     "expo-blur": "^14.1.5",
@@ -36,13 +38,15 @@
     "react-native-css-interop": "^0.1.22",
     "react-native-reanimated": "~3.17.5",
     "react-native-safe-area-context": "5.4.0",
-    "react-native-svg": "^15.11.2"
+    "react-native-svg": "^15.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.13",
     "@types/react-test-renderer": "^19.1.0",
+    "babel-preset-expo": "^13.2.3",
     "eslint": "^9.25.1",
     "eslint-config-expo": "^9.2.0",
     "eslint-config-prettier": "^10.1.2",

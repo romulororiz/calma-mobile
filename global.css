@@ -2,14 +2,100 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Essential custom CSS variables only */
+/* ================================
+   CALMA DESIGN SYSTEM - DESIGN TOKENS
+   ================================ */
+
+/* CSS Custom Properties - Design Tokens */
 :root {
-  --aurora-start: #9F7AEA;
-  --aurora-mid: #EC4899;
-  --aurora-end: #F59E0B;
+  /* Aurora Gradient System */
+  --aurora-start: #9f7aea;
+  --aurora-mid: #ec4899;
+  --aurora-end: #f59e0b;
+
+  /* Base Colors - Ink System */
+  --ink-100: #0a0a0f;
+  --ink-90: #1a1a24;
+  --ink-80: #2a2a38;
+  --ink-70: #3a3a4c;
+
+  /* Surface Colors with Alpha */
+  --surface-primary: rgba(159, 122, 234, 0.04);
+  --surface-secondary: rgba(159, 122, 234, 0.08);
+  --surface-elevated: rgba(26, 26, 36, 0.6);
+  --surface-glass: rgba(255, 255, 255, 0.02);
+  --surface-emergency: rgba(236, 72, 153, 0.08);
+
+  /* Text Hierarchy */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  --text-quaternary: rgba(255, 255, 255, 0.3);
+
+  /* Semantic Colors */
+  --semantic-success: #10b981;
+  --semantic-warning: #f59e0b;
+  --semantic-error: #ef4444;
+  --semantic-info: #3b82f6;
+
+  /* Energy Levels */
+  --energy-high: #34d399;
+  --energy-medium: #fbbf24;
+  --energy-low: #f87171;
+
+  /* Spacing System (8px base unit) */
+  --space-unit: 8px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+
+  /* Typography */
+  --font-xs: 12.8px;
+  --font-sm: 14.2px;
+  --font-md: 16px;
+  --font-lg: 20px;
+  --font-xl: 25px;
+  --font-2xl: 31.25px;
+
+  /* Font Weights */
+  --font-normal: 400;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Line Heights */
+  --line-tight: 1.2;
+  --line-normal: 1.5;
+  --line-relaxed: 1.6;
+
+  /* Letter Spacing */
+  --letter-tight: -0.02em;
+  --letter-normal: 0;
+  --letter-wide: 0.05em;
+
+  /* Border Radius */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-full: 9999px;
+
+  /* Animation Durations */
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+
+  /* Animation Easing */
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --easing-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-/* Simple base styles only */
+/* ================================
+   BASE STYLES (React Native Compatible)
+   ================================ */
+
 * {
   margin: 0;
   padding: 0;
@@ -17,9 +103,239 @@
 }
 
 body {
-  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(180deg, #0A0A0F 0%, #0F0F1A 100%);
-  color: #FFFFFF;
-  line-height: 1.5;
+  font-family:
+    'Nunito',
+    -apple-system,
+    BlinkMacSystemFont,
+    'SF Pro Display',
+    'Segoe UI',
+    sans-serif;
+  background: linear-gradient(180deg, var(--ink-100) 0%, var(--ink-90) 100%);
+  color: var(--text-primary);
+  line-height: var(--line-normal);
   min-height: 100vh;
+  font-weight: var(--font-normal);
+  letter-spacing: var(--letter-normal);
+}
+
+/* ================================
+   COMPONENT LAYER - TAILWIND COMPONENTS
+   ================================ */
+
+@layer components {
+  /* Glass Card Components */
+  .glass-card-base {
+    @apply relative overflow-hidden rounded-lg;
+  }
+
+  .glass-card-default {
+    @apply border border-white/5 bg-surface-glass;
+  }
+
+  .glass-card-primary {
+    @apply border border-aurora-start/10 bg-surface-primary;
+  }
+
+  .glass-card-elevated {
+    @apply bg-surface-elevated shadow-md;
+  }
+
+  .glass-card-emergency {
+    @apply border border-aurora-mid/20 bg-surface-emergency;
+  }
+
+  /* Aurora Button Components */
+  .aurora-btn-base {
+    @apply relative min-h-touch min-w-touch flex-row items-center justify-center overflow-hidden rounded-full font-semibold;
+  }
+
+  .aurora-btn-primary {
+    @apply bg-gradient-to-r from-aurora-start to-aurora-mid text-white;
+  }
+
+  .aurora-btn-secondary {
+    @apply border border-white/10 bg-surface-glass text-text-primary;
+  }
+
+  .aurora-btn-ghost {
+    @apply bg-transparent text-text-secondary;
+  }
+
+  .aurora-btn-sm {
+    @apply px-md py-sm text-sm;
+  }
+
+  .aurora-btn-md {
+    @apply px-lg py-md text-base;
+  }
+
+  .aurora-btn-lg {
+    @apply px-xl py-md text-lg;
+  }
+
+  /* Emotion Button Components */
+  .emotion-btn-base {
+    @apply w-22 h-22 relative flex items-center justify-center overflow-hidden rounded-lg border-2 border-transparent bg-surface-glass;
+  }
+
+  .emotion-btn-selected {
+    @apply border-aurora-start/30 bg-gradient-to-br from-aurora-start to-aurora-mid;
+  }
+
+  /* Context Pill Components */
+  .context-pill-base {
+    @apply min-h-touch flex-row items-center rounded-full border border-white/5 bg-surface-glass px-md py-sm text-sm;
+  }
+
+  .context-pill-selected {
+    @apply border-transparent bg-gradient-to-r from-aurora-start to-aurora-mid text-white;
+  }
+
+  /* Navigation Components */
+  .nav-item-base {
+    @apply relative min-h-touch-comfortable flex-col items-center justify-center rounded-md p-sm;
+  }
+
+  .nav-item-active {
+    @apply text-text-primary;
+  }
+
+  .nav-item-inactive {
+    @apply text-text-tertiary;
+  }
+
+  /* Emergency Card Components */
+  .emergency-card-base {
+    @apply relative min-h-touch-large w-full flex-row items-center overflow-hidden rounded-lg border border-aurora-mid/20 bg-surface-emergency p-lg;
+  }
+
+  /* Pattern Graph Components */
+  .energy-bar-base {
+    @apply relative min-h-[10%] flex-1 rounded-t-sm bg-surface-glass;
+  }
+
+  .energy-bar-low {
+    @apply bg-energy-low/80;
+  }
+
+  .energy-bar-medium {
+    @apply bg-energy-medium/80;
+  }
+
+  .energy-bar-high {
+    @apply bg-energy-high/80;
+  }
+
+  /* Reality Check Components */
+  .reality-check-base {
+    @apply flex-row items-start rounded-md border border-semantic-success/10 bg-semantic-success/5 p-md text-sm;
+  }
+
+  .check-icon-base {
+    @apply flex h-6 w-6 items-center justify-center rounded-full bg-semantic-success/20 text-sm font-semibold text-energy-high;
+  }
+}
+
+/* ================================
+   UTILITIES LAYER - CUSTOM UTILITIES
+   ================================ */
+
+@layer utilities {
+  /* Text Gradient Utility */
+  .text-gradient {
+    background: linear-gradient(135deg, var(--aurora-start), var(--aurora-mid));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Surface Utilities */
+  .surface-gradient {
+    background: linear-gradient(135deg, var(--surface-primary), var(--surface-secondary));
+  }
+
+  .aurora-gradient {
+    background: linear-gradient(135deg, var(--aurora-start), var(--aurora-mid), var(--aurora-end));
+  }
+
+  .glass-effect {
+    background: var(--surface-glass);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .elevated-surface {
+    background: var(--surface-elevated);
+  }
+
+  .emergency-surface {
+    background: var(--surface-emergency);
+    border: 1px solid rgba(236, 72, 153, 0.2);
+  }
+
+  /* ADHD-Friendly Utilities */
+  .adhd-spacing {
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  /* Safe Area Utilities */
+  .safe-area-padding {
+    padding-left: max(var(--space-lg), env(safe-area-inset-left));
+    padding-right: max(var(--space-lg), env(safe-area-inset-right));
+    padding-bottom: max(var(--space-lg), env(safe-area-inset-bottom));
+  }
+
+  /* Animation Utilities */
+  .gentle-transition {
+    transition: all var(--duration-normal) var(--easing-default);
+  }
+
+  .bounce-transition {
+    transition: all var(--duration-normal) var(--easing-bounce);
+  }
+
+  .smooth-transition {
+    transition: all var(--duration-normal) var(--easing-smooth);
+  }
+}
+
+/* ================================
+   ACCESSIBILITY & RESPONSIVE
+   ================================ */
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass-card-base {
+    border-width: 2px;
+  }
+
+  .aurora-btn-base {
+    border-width: 2px;
+  }
+}
+
+/* Touch-friendly sizing for mobile */
+@media (hover: none) {
+  .emotion-btn-base {
+    @apply h-24 w-24;
+  }
+
+  .context-pill-base {
+    @apply min-h-touch-comfortable px-lg py-md;
+  }
+
+  .nav-item-base {
+    @apply min-h-touch-large;
+  }
 }
