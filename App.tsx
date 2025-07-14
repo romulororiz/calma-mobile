@@ -19,14 +19,14 @@ export default function App() {
 
   if (!fontsLoaded) {
     return (
-      <View className="bg-ink flex-1 items-center justify-center">
-        <Text className="text-text-primary text-lg">Loading Calma...</Text>
+      <View className="flex-1 items-center justify-center bg-ink">
+        <Text className="text-lg text-text-primary">Loading Calma...</Text>
       </View>
     );
   }
 
   return (
-    <SafeAreaView className="bg-ink flex-1">
+    <SafeAreaView className="flex-1 bg-ink">
       <StatusBar style="light" backgroundColor="#0A0A0F" />
 
       {/* Aurora Background Gradient */}
@@ -36,89 +36,89 @@ export default function App() {
         {/* Header */}
         <View className="px-lg py-xl">
           <View className="mb-lg flex-row items-center justify-between">
-            <View className="bg-aurora-start h-12 w-12 items-center justify-center rounded-lg">
+            <View className="h-12 w-12 items-center justify-center rounded-lg bg-aurora-start">
               <Text className="text-2xl">🧠</Text>
             </View>
-            <Text className="text-text-primary font-nunito text-2xl font-bold">Calma</Text>
+            <Text className="font-nunito text-2xl font-bold text-text-primary">Calma</Text>
             <TouchableOpacity className="glass-card h-12 w-12 items-center justify-center">
               <Text className="text-xl">☰</Text>
             </TouchableOpacity>
           </View>
 
-          <Text className="text-text-primary mb-sm font-nunito text-3xl font-bold">
+          <Text className="mb-sm font-nunito text-3xl font-bold text-text-primary">
             Good morning, Ana ✨
           </Text>
-          <Text className="text-text-secondary font-nunito text-lg">
+          <Text className="font-nunito text-lg text-text-secondary">
             Thursday, July 12 • 9:41 AM
           </Text>
         </View>
 
         {/* AI Insight Card */}
         <View className="mx-lg mb-lg">
-          <View className="glass-card-primary p-lg relative overflow-hidden rounded-lg">
+          <View className="glass-card-primary relative overflow-hidden rounded-lg p-lg">
             <LinearGradient
               colors={['rgba(159, 122, 234, 0.3)', 'transparent']}
               className="absolute right-0 top-0 h-32 w-32 rounded-full"
               style={{ transform: [{ translateX: 40 }, { translateY: -40 }] }}
             />
-            <View className="bg-aurora-start mb-md h-16 w-16 items-center justify-center rounded-md">
+            <View className="mb-md h-16 w-16 items-center justify-center rounded-md bg-aurora-start">
               <Text className="text-3xl">💡</Text>
             </View>
-            <Text className="text-text-primary mb-sm font-nunito text-xl font-semibold">
+            <Text className="mb-sm font-nunito text-xl font-semibold text-text-primary">
               Your energy peaks at 2 PM today
             </Text>
-            <Text className="text-md text-text-secondary font-nunito">
+            <Text className="font-nunito text-md text-text-secondary">
               Perfect time for that important email you&apos;ve been avoiding. I&apos;ll remind you.
             </Text>
           </View>
         </View>
 
         {/* Quick Stats */}
-        <View className="px-lg mb-lg flex-row">
-          <View className="glass-card p-md mr-md flex-1 items-center rounded-lg">
-            <Text className="text-aurora-start mb-xs font-nunito text-3xl font-bold">7</Text>
-            <Text className="text-text-secondary font-nunito text-sm">Day Streak</Text>
+        <View className="mb-lg flex-row px-lg">
+          <View className="glass-card mr-md flex-1 items-center rounded-lg p-md">
+            <Text className="mb-xs font-nunito text-3xl font-bold text-aurora-start">7</Text>
+            <Text className="font-nunito text-sm text-text-secondary">Day Streak</Text>
           </View>
-          <View className="glass-card p-md flex-1 items-center rounded-lg">
-            <Text className="text-aurora-start mb-xs font-nunito text-3xl font-bold">85%</Text>
-            <Text className="text-text-secondary font-nunito text-sm">Mood Trend ↑</Text>
+          <View className="glass-card flex-1 items-center rounded-lg p-md">
+            <Text className="mb-xs font-nunito text-3xl font-bold text-aurora-start">85%</Text>
+            <Text className="font-nunito text-sm text-text-secondary">Mood Trend ↑</Text>
           </View>
         </View>
 
         {/* Quick Actions */}
-        <View className="px-lg mb-lg">
-          <Text className="text-text-primary mb-md font-nunito text-xl font-semibold">
+        <View className="mb-lg px-lg">
+          <Text className="mb-md font-nunito text-xl font-semibold text-text-primary">
             Quick Actions
           </Text>
           <View className="flex-row flex-wrap">
-            <TouchableOpacity className="p-sm w-1/2">
-              <View className="glass-card p-lg gentle-hover items-center rounded-lg">
+            <TouchableOpacity className="w-1/2 p-sm">
+              <View className="glass-card gentle-hover items-center rounded-lg p-lg">
                 <Text className="mb-sm text-4xl">😊</Text>
-                <Text className="text-md text-text-primary font-nunito font-semibold">
+                <Text className="font-nunito text-md font-semibold text-text-primary">
                   Check In
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity className="p-sm w-1/2">
-              <View className="glass-card p-lg gentle-hover items-center rounded-lg">
+            <TouchableOpacity className="w-1/2 p-sm">
+              <View className="glass-card gentle-hover items-center rounded-lg p-lg">
                 <Text className="mb-sm text-4xl">⏰</Text>
-                <Text className="text-md text-text-primary font-nunito font-semibold">
+                <Text className="font-nunito text-md font-semibold text-text-primary">
                   Time Check
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity className="p-sm w-1/2">
-              <View className="glass-card p-lg gentle-hover items-center rounded-lg">
+            <TouchableOpacity className="w-1/2 p-sm">
+              <View className="glass-card gentle-hover items-center rounded-lg p-lg">
                 <Text className="mb-sm text-4xl">📸</Text>
-                <Text className="text-md text-text-primary font-nunito font-semibold">
+                <Text className="font-nunito text-md font-semibold text-text-primary">
                   Chaos→Clarity
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity className="p-sm w-1/2">
-              <View className="glass-card p-lg gentle-hover items-center rounded-lg">
+            <TouchableOpacity className="w-1/2 p-sm">
+              <View className="glass-card gentle-hover items-center rounded-lg p-lg">
                 <Text className="mb-sm text-4xl">💌</Text>
-                <Text className="text-md text-text-primary font-nunito font-semibold">
+                <Text className="font-nunito text-md font-semibold text-text-primary">
                   Message Check
                 </Text>
               </View>
@@ -127,8 +127,8 @@ export default function App() {
         </View>
 
         {/* Check-in Preview */}
-        <View className="px-lg mb-lg">
-          <Text className="text-text-primary mb-md font-nunito text-xl font-semibold">
+        <View className="mb-lg px-lg">
+          <Text className="mb-md font-nunito text-xl font-semibold text-text-primary">
             How&apos;s your beautiful mind today?
           </Text>
           <View className="mb-lg flex-row justify-center">
@@ -143,27 +143,27 @@ export default function App() {
             </TouchableOpacity>
           </View>
 
-          <Text className="text-text-tertiary mb-md font-nunito text-center text-sm">
+          <Text className="mb-md text-center font-nunito text-sm text-text-tertiary">
             ADD CONTEXT (OPTIONAL)
           </Text>
           <View className="flex-row flex-wrap justify-center">
             <TouchableOpacity className="context-pill m-1">
               <Text className="text-sm">💊</Text>
-              <Text className="text-text-primary font-nunito text-sm">Meds taken</Text>
+              <Text className="font-nunito text-sm text-text-primary">Meds taken</Text>
             </TouchableOpacity>
             <TouchableOpacity className="context-pill m-1">
               <Text className="text-sm">⚡</Text>
-              <Text className="text-text-primary font-nunito text-sm">Energetic</Text>
+              <Text className="font-nunito text-sm text-text-primary">Energetic</Text>
             </TouchableOpacity>
             <TouchableOpacity className="context-pill m-1">
               <Text className="text-sm">🏠</Text>
-              <Text className="text-text-primary font-nunito text-sm">At home</Text>
+              <Text className="font-nunito text-sm text-text-primary">At home</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Aurora Button */}
-        <View className="px-lg mb-2xl">
+        <View className="mb-2xl px-lg">
           <TouchableOpacity className="aurora-btn aurora-btn-primary w-full">
             <Text className="font-nunito text-lg font-semibold text-white">
               Go to Check-in Flow
@@ -175,7 +175,7 @@ export default function App() {
 
       {/* Emergency Float Button */}
       <TouchableOpacity
-        className="right-lg absolute bottom-24 h-14 w-14 items-center justify-center rounded-full"
+        className="absolute bottom-24 right-lg h-14 w-14 items-center justify-center rounded-full"
         style={{
           backgroundColor: 'rgba(236, 72, 153, 0.9)',
           shadowColor: '#EC4899',
@@ -188,7 +188,7 @@ export default function App() {
       </TouchableOpacity>
 
       {/* Bottom Navigation */}
-      <View className="bg-surface-elevated px-sm py-sm absolute bottom-0 left-0 right-0 border-t border-white/5">
+      <View className="absolute bottom-0 left-0 right-0 border-t border-white/5 bg-surface-elevated px-sm py-sm">
         <View className="flex-row justify-around">
           <TouchableOpacity className="nav-item nav-item-active">
             <Text className="mb-1 text-xl">🏠</Text>
