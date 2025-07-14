@@ -79,13 +79,15 @@ const SIZES = {
 		fontSize: TYPOGRAPHY.fontSize.sm,
 		borderRadius: BORDER_RADIUS.full,
 		iconSize: 16,
+		className: 'h-11 px-4 text-sm',
 	},
 	md: {
 		height: 52,
 		paddingHorizontal: SPACING.lg,
-		fontSize: TYPOGRAPHY.fontSize.base,
+		fontSize: TYPOGRAPHY.fontSize.md,
 		borderRadius: BORDER_RADIUS.full,
 		iconSize: 20,
+		className: 'h-13 px-6 text-base',
 	},
 	lg: {
 		height: 60,
@@ -93,6 +95,7 @@ const SIZES = {
 		fontSize: TYPOGRAPHY.fontSize.lg,
 		borderRadius: BORDER_RADIUS.full,
 		iconSize: 24,
+		className: 'h-15 px-10 text-lg',
 	},
 	xl: {
 		height: 72,
@@ -100,6 +103,7 @@ const SIZES = {
 		fontSize: TYPOGRAPHY.fontSize.xl,
 		borderRadius: BORDER_RADIUS.full,
 		iconSize: 28,
+		className: 'h-18 px-16 text-xl',
 	},
 } as const;
 
@@ -119,20 +123,19 @@ export default function AuroraButton({
 	hapticFeedback = true,
 	glowEffect = false,
 }: AuroraButtonProps) {
-	const scale = useSharedValue(1);
-	const opacity = useSharedValue(1);
-	const glowOpacity = useSharedValue(glowEffect ? 0.3 : 0);
-	const rippleScale = useSharedValue(0);
-	const rippleOpacity = useSharedValue(0);
-
 	const currentVariant = VARIANTS[variant];
 	const currentSize = SIZES[size];
 
-	// Animation styles
+	// Animation values
+	const scale = useSharedValue(1);
+	const glowOpacity = useSharedValue(0);
+	const rippleScale = useSharedValue(0);
+	const rippleOpacity = useSharedValue(0);
+
+	// Animated styles
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
 			transform: [{ scale: scale.value }],
-			opacity: opacity.value,
 		};
 	});
 
@@ -149,52 +152,54 @@ export default function AuroraButton({
 		};
 	});
 
-	// Handle haptic feedback
+	// Haptic feedback
 	const triggerHapticFeedback = () => {
 		if (hapticFeedback) {
 			Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		}
 	};
 
-	// Handle press interactions
+	// Interaction handlers
 	const handlePressIn = () => {
-		if (!disabled && !loading) {
-			scale.value = withSpring(0.96, {
-				damping: 15,
-				stiffness: 300,
+		if (disabled || loading) return;
+
+		scale.value = withSpring(0.95, {
+			damping: 12,
+			stiffness: 300,
+		});
+
+		if (glowEffect) {
+			glowOpacity.value = withTiming(0.6, {
+				duration: ANIMATION.duration.fast,
 			});
-
-			if (glowEffect) {
-				glowOpacity.value = withTiming(0.6, {
-					duration: ANIMATION.duration.fast,
-				});
-			}
-
-			// Ripple effect
-			rippleScale.value = 0;
-			rippleOpacity.value = 0.3;
-			rippleScale.value = withTiming(1, { duration: ANIMATION.duration.slow });
-			rippleOpacity.value = withTiming(0, {
-				duration: ANIMATION.duration.slow,
-			});
-
-			runOnJS(triggerHapticFeedback)();
 		}
+
+		// Ripple effect
+		rippleScale.value = 0;
+		rippleOpacity.value = 0.8;
+		rippleScale.value = withTiming(1, {
+			duration: ANIMATION.duration.normal,
+		});
+		rippleOpacity.value = withTiming(0, {
+			duration: ANIMATION.duration.normal,
+		});
 	};
 
 	const handlePressOut = () => {
-		if (!disabled && !loading) {
-			scale.value = withSpring(1, {
-				damping: 15,
-				stiffness: 300,
-			});
+		if (disabled || loading) return;
 
-			if (glowEffect) {
-				glowOpacity.value = withTiming(0.3, {
-					duration: ANIMATION.duration.normal,
-				});
-			}
+		scale.value = withSpring(1, {
+			damping: 12,
+			stiffness: 300,
+		});
+
+		if (glowEffect) {
+			glowOpacity.value = withTiming(0, {
+				duration: ANIMATION.duration.normal,
+			});
 		}
+
+		runOnJS(triggerHapticFeedback)();
 	};
 
 	const handlePress = () => {
@@ -209,9 +214,6 @@ export default function AuroraButton({
 		borderRadius: currentSize.borderRadius,
 		width: fullWidth ? '100%' : undefined,
 		minWidth: currentSize.height, // Ensure minimum square touch target
-		justifyContent: 'center',
-		alignItems: 'center',
-		flexDirection: 'row',
 		overflow: 'hidden',
 		position: 'relative',
 		...style,
@@ -229,20 +231,15 @@ export default function AuroraButton({
 	const isDisabled = disabled || loading;
 
 	return (
-		<View style={{ position: 'relative' }}>
+		<View className="relative">
 			{/* Glow effect */}
 			{glowEffect && (
 				<Animated.View
+					className="absolute -inset-1 z-0"
 					style={[
 						{
-							position: 'absolute',
-							top: -4,
-							left: -4,
-							right: -4,
-							bottom: -4,
 							borderRadius: currentSize.borderRadius + 4,
 							backgroundColor: currentVariant.glowColor,
-							zIndex: 0,
 						},
 						glowAnimatedStyle,
 					]}
@@ -261,18 +258,24 @@ export default function AuroraButton({
 				accessibilityLabel={typeof children === 'string' ? children : undefined}
 			>
 				{isGhost ? (
-					<View style={[containerStyle, { backgroundColor: 'transparent' }]}>
+					<View 
+						className={`justify-center items-center flex-row ${fullWidth ? 'w-full' : ''} ${className}`}
+						style={[containerStyle, { backgroundColor: 'transparent' }]}
+					>
 						{/* Ghost button content */}
 						{icon && iconPosition === 'left' && (
-							<View style={{ marginRight: SPACING.sm }}>{icon}</View>
+							<View className="mr-2">{icon}</View>
 						)}
 
-						<Text style={[buttonTextStyle, { opacity: isDisabled ? 0.5 : 1 }]}>
+						<Text 
+							className="text-center font-semibold"
+							style={[buttonTextStyle, { opacity: isDisabled ? 0.5 : 1 }]}
+						>
 							{children}
 						</Text>
 
 						{icon && iconPosition === 'right' && (
-							<View style={{ marginLeft: SPACING.sm }}>{icon}</View>
+							<View className="ml-2">{icon}</View>
 						)}
 					</View>
 				) : (
@@ -283,19 +286,18 @@ export default function AuroraButton({
 								: currentVariant.gradient
 						}
 						locations={[0, 1]}
+						className={`justify-center items-center flex-row ${fullWidth ? 'w-full' : ''} ${className}`}
 						style={containerStyle}
 					>
 						{/* Ripple effect */}
 						<Animated.View
+							className="absolute bg-white/20 rounded-full"
 							style={[
 								{
-									position: 'absolute',
 									top: '50%',
 									left: '50%',
 									width: currentSize.height * 2,
 									height: currentSize.height * 2,
-									borderRadius: currentSize.height,
-									backgroundColor: 'rgba(255, 255, 255, 0.2)',
 									marginTop: -currentSize.height,
 									marginLeft: -currentSize.height,
 								},
@@ -305,15 +307,18 @@ export default function AuroraButton({
 
 						{/* Button content */}
 						{icon && iconPosition === 'left' && (
-							<View style={{ marginRight: SPACING.sm }}>{icon}</View>
+							<View className="mr-2">{icon}</View>
 						)}
 
-						<Text style={[buttonTextStyle, { opacity: isDisabled ? 0.5 : 1 }]}>
+						<Text 
+							className="text-center font-semibold"
+							style={[buttonTextStyle, { opacity: isDisabled ? 0.5 : 1 }]}
+						>
 							{loading ? 'Loading...' : children}
 						</Text>
 
 						{icon && iconPosition === 'right' && (
-							<View style={{ marginLeft: SPACING.sm }}>{icon}</View>
+							<View className="ml-2">{icon}</View>
 						)}
 					</LinearGradient>
 				)}

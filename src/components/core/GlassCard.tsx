@@ -60,9 +60,9 @@ const GlassCard: React.FC<GlassCardProps> = ({
 
   // Padding configuration
   const paddingConfig = {
-    sm: SPACING.sm,
-    md: SPACING.md,
-    lg: SPACING.lg,
+    sm: 'p-2',
+    md: 'p-4',
+    lg: 'p-6',
   };
 
   // Variant styles
@@ -128,25 +128,18 @@ const GlassCard: React.FC<GlassCardProps> = ({
 
   const handlePress = () => {
     if (disabled || !onPress) return;
-    
-    if (hapticFeedback) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
-    
     onPress();
   };
 
+  const isInteractive = Boolean(onPress);
   const variantStyles = getVariantStyles();
-  const isInteractive = !!onPress && !disabled;
 
   const cardStyle: ViewStyle = {
     borderRadius: LAYOUT.borderRadius.lg,
     borderWidth: 1,
-    padding: paddingConfig[padding],
-    position: 'relative',
     overflow: 'hidden',
+    position: 'relative',
     ...variantStyles,
-    opacity: disabled ? 0.4 : 1,
     ...style,
   };
 
@@ -156,26 +149,12 @@ const GlassCard: React.FC<GlassCardProps> = ({
     
     return (
       <Animated.View
-        style={[
-          {
-            position: 'absolute',
-            top: -50,
-            right: -50,
-            width: 200,
-            height: 200,
-            borderRadius: 100,
-            opacity: 0.3,
-          },
-          glowStyle,
-        ]}
+        className="absolute -top-12 -right-12 w-50 h-50 rounded-full opacity-30"
+        style={glowStyle}
       >
         <LinearGradient
           colors={[COLORS.aurora.start, 'transparent']}
-          style={{
-            width: '100%',
-            height: '100%',
-            borderRadius: 100,
-          }}
+          className="w-full h-full rounded-full"
         />
       </Animated.View>
     );
@@ -191,22 +170,18 @@ const GlassCard: React.FC<GlassCardProps> = ({
           disabled={disabled}
           activeOpacity={0.9}
           style={cardStyle}
-          className={className}
+          className={`${paddingConfig[padding]} ${className || ''}`}
           {...props}
         >
           {renderGlow()}
           <BlurView
             intensity={blurIntensity}
+            className="absolute inset-0"
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
               borderRadius: LAYOUT.borderRadius.lg,
             }}
           />
-          <View style={{ position: 'relative', zIndex: 1 }}>
+          <View className="relative z-10">
             {children}
           </View>
         </TouchableOpacity>
@@ -215,20 +190,19 @@ const GlassCard: React.FC<GlassCardProps> = ({
   }
 
   return (
-    <Animated.View style={[cardStyle, animatedStyle]} className={className}>
+    <Animated.View 
+      style={[cardStyle, animatedStyle]} 
+      className={`${paddingConfig[padding]} ${className || ''}`}
+    >
       {renderGlow()}
       <BlurView
         intensity={blurIntensity}
+        className="absolute inset-0"
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
           borderRadius: LAYOUT.borderRadius.lg,
         }}
       />
-      <View style={{ position: 'relative', zIndex: 1 }}>
+      <View className="relative z-10">
         {children}
       </View>
     </Animated.View>

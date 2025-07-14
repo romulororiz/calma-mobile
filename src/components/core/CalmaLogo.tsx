@@ -20,24 +20,24 @@ const CalmaLogo: React.FC<CalmaLogoProps> = ({
 }) => {
   const sizeConfig = {
     sm: {
-      container: 48,
-      emoji: 24,
-      textSize: 16,
+      containerSize: 'w-12 h-12',
+      emoji: 'text-2xl',
+      textSize: 'text-base',
     },
     md: {
-      container: 64,
-      emoji: 32,
-      textSize: 20,
+      containerSize: 'w-16 h-16',
+      emoji: 'text-3xl',
+      textSize: 'text-xl',
     },
     lg: {
-      container: 80,
-      emoji: 40,
-      textSize: 24,
+      containerSize: 'w-20 h-20',
+      emoji: 'text-4xl',
+      textSize: 'text-2xl',
     },
     xl: {
-      container: 100,
-      emoji: 48,
-      textSize: 32,
+      containerSize: 'w-24 h-24',
+      emoji: 'text-5xl',
+      textSize: 'text-3xl',
     },
   };
 
@@ -46,26 +46,16 @@ const CalmaLogo: React.FC<CalmaLogoProps> = ({
 
   const LogoContainer = () => (
     <View
-      className={`items-center justify-center ${className || ''}`}
-      style={[
-        {
-          width: config.container,
-          height: config.container,
-          borderRadius: LAYOUT.borderRadius.lg,
-        },
-        style,
-      ]}
+      className={`items-center justify-center ${config.containerSize} ${className || ''}`}
+      style={style}
     >
       <LinearGradient
         colors={[COLORS.aurora.start, COLORS.aurora.mid]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
+        className={`${config.containerSize} items-center justify-center`}
         style={{
-          width: config.container,
-          height: config.container,
           borderRadius: LAYOUT.borderRadius.lg,
-          justifyContent: 'center',
-          alignItems: 'center',
           shadowColor: COLORS.aurora.start,
           shadowOffset: {
             width: 0,
@@ -77,10 +67,7 @@ const CalmaLogo: React.FC<CalmaLogoProps> = ({
         }}
       >
         <Text
-          style={{
-            fontSize: config.emoji,
-            color: 'white',
-          }}
+          className={`${config.emoji} text-white`}
         >
           🧠
         </Text>
@@ -90,12 +77,11 @@ const CalmaLogo: React.FC<CalmaLogoProps> = ({
 
   const LogoText = () => (
     <Text
-      className="font-nunito font-bold text-text-primary"
+      className={`font-nunito font-bold text-text-primary ${config.textSize} ${
+        isHorizontal ? 'ml-4' : 'mt-2'
+      }`}
       style={{
-        fontSize: config.textSize,
         letterSpacing: -0.02,
-        marginTop: isHorizontal ? 0 : SPACING.sm,
-        marginLeft: isHorizontal ? SPACING.md : 0,
       }}
     >
       Calma

@@ -52,8 +52,8 @@ const HomeScreen: React.FC = () => {
         contentContainerStyle={{ paddingBottom: 120 }}
       >
         {/* Header */}
-        <View className="px-lg py-xl">
-          <View className="mb-lg flex-row items-center justify-between">
+        <View className="px-6 py-10">
+          <View className="mb-6 flex-row items-center justify-between">
             <CalmaLogo size="md" />
             <Text className="flex-1 text-center font-nunito text-2xl font-bold text-text-primary">
               Calma
@@ -67,7 +67,7 @@ const HomeScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          <Text className="mb-sm font-nunito text-3xl font-bold text-text-primary">
+          <Text className="mb-2 font-nunito text-3xl font-bold text-text-primary">
             Good morning, Ana ✨
           </Text>
           <Text className="font-nunito text-lg text-text-secondary">
@@ -76,127 +76,147 @@ const HomeScreen: React.FC = () => {
         </View>
 
         {/* AI Insight Card */}
-        <View className="mx-lg mb-lg">
+        <View className="px-6 mb-8">
           <GlassCard variant="primary" className="relative overflow-hidden">
             <LinearGradient
-              colors={[`${COLORS.aurora.start}33`, 'transparent']}
-              className="absolute right-0 top-0 h-32 w-32 rounded-full"
-              style={{ transform: [{ translateX: 40 }, { translateY: -40 }] }}
+              colors={[`${COLORS.aurora.start}10`, `${COLORS.aurora.mid}05`]}
+              className="absolute inset-0"
             />
-            <View className="mb-md h-16 w-16 items-center justify-center rounded-md bg-aurora-start">
-              <Text className="text-3xl">💡</Text>
+            <View className="p-6">
+              <Text className="mb-2 font-nunito font-semibold text-text-primary">
+                🔮 AI Insight
+              </Text>
+              <Text className="mb-4 font-nunito text-sm text-text-secondary leading-relaxed">
+                Your energy patterns show you're most focused between 9-11 AM. Consider 
+                scheduling important tasks during this window.
+              </Text>
+              <TouchableOpacity
+                className="self-start"
+                onPress={() => {/* Navigate to insights */}}
+              >
+                <Text className="font-nunito font-semibold text-sm" style={{ color: COLORS.aurora.start }}>
+                  View Full Analysis →
+                </Text>
+              </TouchableOpacity>
             </View>
-            <Text className="mb-sm font-nunito text-xl font-semibold text-text-primary">
-              Your energy peaks at 2 PM today
-            </Text>
-            <Text className="font-nunito text-md text-text-secondary">
-              Perfect time for that important email you've been avoiding. I'll remind you.
-            </Text>
           </GlassCard>
         </View>
 
         {/* Quick Stats */}
-        <View className="mx-lg mb-lg">
-          <View className="flex-row gap-md">
-            <GlassCard className="flex-1 items-center py-md">
-              <Text 
-                className="mb-xs text-4xl font-bold"
-                style={{ color: COLORS.aurora.start }}
-              >
-                7
-              </Text>
-              <Text className="font-nunito text-sm text-text-secondary">
-                Day Streak
-              </Text>
-            </GlassCard>
-            
-            <GlassCard className="flex-1 items-center py-md">
-              <Text 
-                className="mb-xs text-4xl font-bold"
-                style={{ color: COLORS.aurora.start }}
-              >
-                85%
-              </Text>
-              <Text className="font-nunito text-sm text-text-secondary">
-                Mood Trend ↑
-              </Text>
-            </GlassCard>
+        <View className="px-6 mb-8">
+          <View className="flex-row space-x-4">
+            <View className="flex-1">
+              <GlassCard className="items-center py-6">
+                <Text className="mb-1 font-nunito text-2xl font-bold text-text-primary">
+                  7
+                </Text>
+                <Text className="font-nunito text-sm text-text-secondary">
+                  Day Streak
+                </Text>
+              </GlassCard>
+            </View>
+            <View className="flex-1">
+              <GlassCard className="items-center py-6">
+                <Text className="mb-1 font-nunito text-2xl font-bold" style={{ color: COLORS.aurora.start }}>
+                  📈
+                </Text>
+                <Text className="font-nunito text-sm text-text-secondary">
+                  Mood Trend
+                </Text>
+              </GlassCard>
+            </View>
           </View>
         </View>
 
         {/* Quick Actions */}
-        <View className="mx-lg">
-          <Text className="mb-md font-nunito text-lg font-semibold text-text-primary">
+        <View className="px-6 mb-8">
+          <Text className="mb-6 font-nunito text-lg font-semibold text-text-primary">
             Quick Actions
           </Text>
-          
-          <View className="flex-row flex-wrap gap-md">
-            <TouchableOpacity
-              className="flex-1 min-w-[160px]"
-              onPress={() => handleQuickAction('checkin')}
-            >
-              <GlassCard className="items-center py-lg">
-                <Text className="mb-sm text-4xl">😊</Text>
-                <Text className="font-nunito text-md font-semibold text-text-primary">
+          <View className="flex-row flex-wrap gap-4">
+            <View className="w-[48%]">
+              <GlassCard
+                variant="primary"
+                onPress={() => handleQuickAction('checkin')}
+                className="p-6 items-center min-h-[120px] justify-center"
+              >
+                <Text className="mb-2 text-3xl">😊</Text>
+                <Text className="font-nunito font-semibold text-text-primary text-center">
                   Check In
                 </Text>
+                <Text className="font-nunito text-xs text-text-secondary text-center mt-1">
+                  How are you feeling?
+                </Text>
               </GlassCard>
-            </TouchableOpacity>
+            </View>
             
-            <TouchableOpacity
-              className="flex-1 min-w-[160px]"
-              onPress={() => handleQuickAction('time')}
-            >
-              <GlassCard className="items-center py-lg">
-                <Text className="mb-sm text-4xl">⏰</Text>
-                <Text className="font-nunito text-md font-semibold text-text-primary">
+            <View className="w-[48%]">
+              <GlassCard
+                variant="elevated"
+                onPress={() => handleQuickAction('time')}
+                className="p-6 items-center min-h-[120px] justify-center"
+              >
+                <Text className="mb-2 text-3xl">⏰</Text>
+                <Text className="font-nunito font-semibold text-text-primary text-center">
                   Time Check
                 </Text>
+                <Text className="font-nunito text-xs text-text-secondary text-center mt-1">
+                  Reality anchor
+                </Text>
               </GlassCard>
-            </TouchableOpacity>
+            </View>
             
-            <TouchableOpacity
-              className="flex-1 min-w-[160px]"
-              onPress={() => handleQuickAction('chaos')}
-            >
-              <GlassCard className="items-center py-lg">
-                <Text className="mb-sm text-4xl">📸</Text>
-                <Text className="font-nunito text-md font-semibold text-text-primary">
+            <View className="w-[48%]">
+              <GlassCard
+                variant="elevated"
+                onPress={() => handleQuickAction('chaos')}
+                className="p-6 items-center min-h-[120px] justify-center"
+              >
+                <Text className="mb-2 text-3xl">🌪️</Text>
+                <Text className="font-nunito font-semibold text-text-primary text-center">
                   Chaos→Clarity
                 </Text>
-              </GlassCard>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              className="flex-1 min-w-[160px]"
-              onPress={() => handleQuickAction('messages')}
-            >
-              <GlassCard className="items-center py-lg">
-                <Text className="mb-sm text-4xl">💌</Text>
-                <Text className="font-nunito text-md font-semibold text-text-primary">
-                  Message Check
+                <Text className="font-nunito text-xs text-text-secondary text-center mt-1">
+                  Organize thoughts
                 </Text>
               </GlassCard>
-            </TouchableOpacity>
+            </View>
+            
+            <View className="w-[48%]">
+              <GlassCard
+                variant="elevated"
+                onPress={() => handleQuickAction('messages')}
+                className="p-6 items-center min-h-[120px] justify-center"
+              >
+                <Text className="mb-2 text-3xl">💬</Text>
+                <Text className="font-nunito font-semibold text-text-primary text-center">
+                  Message Check
+                </Text>
+                <Text className="font-nunito text-xs text-text-secondary text-center mt-1">
+                  Tone analyzer
+                </Text>
+              </GlassCard>
+            </View>
           </View>
         </View>
+
+        {/* Emergency Button */}
+        <View className="px-6">
+          <GlassCard
+            variant="emergency"
+            onPress={handleEmergency}
+            className="p-6 items-center"
+          >
+            <Text className="mb-2 text-2xl">🚨</Text>
+            <Text className="font-nunito font-bold text-text-primary text-center">
+              Emergency Support
+            </Text>
+            <Text className="font-nunito text-xs text-text-secondary text-center mt-1">
+              24/7 crisis support
+            </Text>
+          </GlassCard>
+        </View>
       </ScrollView>
-      
-      {/* Emergency Float Button */}
-      <TouchableOpacity
-        className="absolute bottom-32 right-lg h-14 w-14 items-center justify-center rounded-full"
-        style={{
-          backgroundColor: `${COLORS.aurora.mid}E6`, // 90% opacity
-          shadowColor: COLORS.aurora.mid,
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.4,
-          shadowRadius: 8,
-          elevation: 8,
-        }}
-        onPress={handleEmergency}
-      >
-        <Text className="text-2xl">🆘</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };

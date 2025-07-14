@@ -1,210 +1,183 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, SafeAreaView, Dimensions } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient';
 import EmotionSelector from '../../components/adhd/EmotionSelector';
-import ContextPills, {
-	CONTEXT_OPTIONS,
-} from '../../components/adhd/ContextPills';
+import ContextPills from '../../components/adhd/ContextPills';
 import AuroraButton from '../../components/core/AuroraButton';
-import { COLORS, SPACING, TYPOGRAPHY } from '../../constants/theme';
+import { COLORS, SPACING } from '../../constants/theme';
 
-interface CheckinData {
-	emotion: string;
-	context: string[];
-	timestamp: string;
-}
+// Default context options
+const CONTEXT_OPTIONS = [
+  // Medication
+  { id: 'med-taken', label: 'Meds Taken', icon: '💊', category: 'medication' as const },
+  { id: 'med-missed', label: 'Missed Meds', icon: '⚠️', category: 'medication' as const },
+  { id: 'med-late', label: 'Late Meds', icon: '🕐', category: 'medication' as const },
+  
+  // Energy
+  { id: 'energy-high', label: 'High Energy', icon: '⚡', category: 'energy' as const },
+  { id: 'energy-low', label: 'Low Energy', icon: '🔋', category: 'energy' as const },
+  { id: 'energy-crash', label: 'Energy Crash', icon: '📉', category: 'energy' as const },
+  
+  // Location
+  { id: 'home', label: 'Home', icon: '🏠', category: 'location' as const },
+  { id: 'work', label: 'Work', icon: '💼', category: 'location' as const },
+  { id: 'social', label: 'Social', icon: '👥', category: 'location' as const },
+  
+  // Activity
+  { id: 'working', label: 'Working', icon: '💻', category: 'activity' as const },
+  { id: 'resting', label: 'Resting', icon: '😴', category: 'activity' as const },
+  { id: 'exercising', label: 'Exercising', icon: '🏃', category: 'activity' as const },
+  { id: 'studying', label: 'Studying', icon: '📚', category: 'activity' as const },
+  { id: 'eating', label: 'Eating', icon: '🍽️', category: 'activity' as const },
+  { id: 'stressed', label: 'Stressed', icon: '😰', category: 'activity' as const },
+];
 
 interface CheckinScreenProps {
-	onSubmit?: (data: CheckinData) => void;
-	onEmergency?: () => void;
+  onSubmit?: (data: { emotion: string; context: string[]; timestamp: Date }) => void;
+  onEmergency?: () => void;
 }
 
 export default function CheckinScreen({
-	onSubmit,
-	onEmergency,
+  onSubmit,
+  onEmergency,
 }: CheckinScreenProps) {
-	const [selectedEmotion, setSelectedEmotion] = useState<string>('');
-	const [selectedContext, setSelectedContext] = useState<string[]>([]);
-	const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedEmotion, setSelectedEmotion] = useState('');
+  const [selectedContext, setSelectedContext] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const screenHeight = Dimensions.get('window').height;
-	const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get('window').width;
 
-	const handleSubmit = async () => {
-		if (!selectedEmotion) return;
+  // Emergency emotions that should trigger emergency mode
+  const emergencyEmotions = ['anxious', 'overwhelmed', 'crisis'];
+  const isEmergency = emergencyEmotions.includes(selectedEmotion);
 
-		setIsSubmitting(true);
+  const canSubmit = selectedEmotion !== '';
 
-		const checkinData: CheckinData = {
-			emotion: selectedEmotion,
-			context: selectedContext,
-			timestamp: new Date().toISOString(),
-		};
+  const handleEmotionChange = (emotion: string) => {
+    setSelectedEmotion(emotion);
+  };
 
-		try {
-			// Simulate API call
-			await new Promise(resolve => setTimeout(resolve, 1000));
+  const handleContextChange = (context: string[]) => {
+    setSelectedContext(context);
+  };
 
-			if (onSubmit) {
-				onSubmit(checkinData);
-			}
+  const handleSubmit = () => {
+    if (!canSubmit) return;
 
-			// Handle emergency support redirect
-			if (selectedEmotion === 'support' && onEmergency) {
-				onEmergency();
-			}
-		} catch (error) {
-			console.error('Failed to submit check-in:', error);
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
+    setIsSubmitting(true);
 
-	const handleEmotionChange = (emotionId: string) => {
-		setSelectedEmotion(emotionId);
-	};
+    // Simulate API call
+    setTimeout(() => {
+      const data = {
+        emotion: selectedEmotion,
+        context: selectedContext,
+        timestamp: new Date(),
+      };
 
-	const handleContextChange = (contextIds: string[]) => {
-		setSelectedContext(contextIds);
-	};
+      if (isEmergency && onEmergency) {
+        onEmergency();
+      } else if (onSubmit) {
+        onSubmit(data);
+      }
 
-	const canSubmit = selectedEmotion !== '';
-	const isEmergency = selectedEmotion === 'support';
+      setIsSubmitting(false);
+    }, 1000);
+  };
 
-	return (
-		<SafeAreaView style={{ flex: 1 }}>
-			<LinearGradient
-				colors={[COLORS.ink[100], COLORS.ink[90], COLORS.ink[80]]}
-				style={{ flex: 1 }}
-			>
-				<StatusBar style='light' />
+  return (
+    <SafeAreaView className="flex-1">
+      <LinearGradient
+        colors={[COLORS.ink[100], COLORS.ink[90], COLORS.ink[80]]}
+        className="flex-1"
+      >
+        <StatusBar style='light' />
 
-				<ScrollView
-					contentContainerStyle={{
-						flexGrow: 1,
-						paddingHorizontal: SPACING.lg,
-						paddingVertical: SPACING.xl,
-						// Ensure 70% whitespace - content takes max 30% of screen width
-						maxWidth: screenWidth * 0.7,
-						alignSelf: 'center',
-						width: '100%',
-					}}
-					showsVerticalScrollIndicator={false}
-					keyboardShouldPersistTaps='handled'
-				>
-					{/* Header */}
-					<View
-						style={{
-							alignItems: 'center',
-							marginBottom: SPACING['2xl'],
-							paddingTop: SPACING.xl,
-						}}
-					>
-						<Text
-							style={{
-								color: COLORS.text.primary,
-								fontSize: TYPOGRAPHY.fontSize['2xl'],
-								fontFamily: 'Nunito_700Bold',
-								textAlign: 'center',
-								lineHeight: TYPOGRAPHY.fontSize['2xl'] * 1.3,
-								marginBottom: SPACING.sm,
-							}}
-						>
-							How are you right now?
-						</Text>
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingHorizontal: SPACING.lg,
+            paddingVertical: SPACING.xl,
+            // Ensure 70% whitespace - content takes max 30% of screen width
+            maxWidth: screenWidth * 0.7,
+            alignSelf: 'center',
+            width: '100%',
+          }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps='handled'
+        >
+          {/* Header */}
+          <View className="items-center mb-16 pt-10">
+            <Text className="text-center text-text-primary font-nunito text-2xl font-bold mb-2 leading-tight">
+              How are you right now?
+            </Text>
 
-						<Text
-							style={{
-								color: COLORS.text.secondary,
-								fontSize: TYPOGRAPHY.fontSize.base,
-								fontFamily: 'Nunito_400Regular',
-								textAlign: 'center',
-								lineHeight: TYPOGRAPHY.fontSize.base * 1.5,
-							}}
-						>
-							Just pick what feels right
-						</Text>
-					</View>
+            <Text className="text-center text-text-secondary font-nunito text-base leading-relaxed">
+              Just pick what feels right
+            </Text>
+          </View>
 
-					{/* Emotion Selection */}
-					<View
-						style={{
-							marginBottom: SPACING['2xl'],
-							alignItems: 'center',
-						}}
-					>
-						<EmotionSelector
-							selected={selectedEmotion}
-							onChange={handleEmotionChange}
-							size='lg'
-							showLabels={true}
-							hapticFeedback={true}
-						/>
-					</View>
+          {/* Emotion Selection */}
+          <View className="mb-16 items-center">
+            <EmotionSelector
+              selected={selectedEmotion}
+              onChange={handleEmotionChange}
+              size='lg'
+              showLabels={true}
+              hapticFeedback={true}
+            />
+          </View>
 
-					{/* Context Selection - Only show if emotion is selected */}
-					{selectedEmotion && (
-						<View
-							style={{
-								marginBottom: SPACING['2xl'],
-								alignItems: 'center',
-							}}
-						>
-							<ContextPills
-								title='Add context (optional)'
-								options={CONTEXT_OPTIONS}
-								selected={selectedContext}
-								onChange={handleContextChange}
-								maxSelections={3}
-								hapticFeedback={true}
-							/>
-						</View>
-					)}
+          {/* Context Selection - Only show if emotion is selected */}
+          {selectedEmotion && (
+            <View className="mb-16 items-center">
+              <ContextPills
+                title='Add context (optional)'
+                options={CONTEXT_OPTIONS}
+                selected={selectedContext}
+                onChange={handleContextChange}
+                maxSelections={3}
+                hapticFeedback={true}
+              />
+            </View>
+          )}
 
-					{/* Spacer to push button to bottom */}
-					<View style={{ flex: 1, minHeight: SPACING.xl }} />
+          {/* Spacer to push button to bottom */}
+          <View className="flex-1" style={{ minHeight: SPACING.xl }} />
 
-					{/* Submit Button */}
-					<View
-						style={{
-							paddingTop: SPACING.lg,
-							alignItems: 'center',
-						}}
-					>
-						<AuroraButton
-							variant={isEmergency ? 'emergency' : 'primary'}
-							size='lg'
-							fullWidth
-							onPress={handleSubmit}
-							disabled={!canSubmit}
-							loading={isSubmitting}
-							glowEffect={isEmergency}
-							hapticFeedback={true}
-						>
-							{isEmergency ? 'Get Support' : 'Continue'}
-						</AuroraButton>
+          {/* Submit Button */}
+          <View className="pt-6 items-center">
+            <AuroraButton
+              variant={isEmergency ? 'emergency' : 'primary'}
+              size='lg'
+              fullWidth
+              onPress={handleSubmit}
+              disabled={!canSubmit}
+              loading={isSubmitting}
+              glowEffect={isEmergency}
+              hapticFeedback={true}
+            >
+              {isEmergency ? 'Get Support' : 'Continue'}
+            </AuroraButton>
 
-						{/* Skip option for those who change their mind */}
-						{selectedEmotion && (
-							<AuroraButton
-								variant='ghost'
-								size='md'
-								onPress={() => {
-									setSelectedEmotion('');
-									setSelectedContext([]);
-								}}
-								style={{ marginTop: SPACING.md }}
-							>
-								Start Over
-							</AuroraButton>
-						)}
-					</View>
-				</ScrollView>
-			</LinearGradient>
-		</SafeAreaView>
-	);
+            {/* Skip option for those who change their mind */}
+            {selectedEmotion && (
+              <AuroraButton
+                variant='ghost'
+                size='md'
+                onPress={() => {
+                  setSelectedEmotion('');
+                  setSelectedContext([]);
+                }}
+                className="mt-4"
+              >
+                Start Over
+              </AuroraButton>
+            )}
+          </View>
+        </ScrollView>
+      </LinearGradient>
+    </SafeAreaView>
+  );
 }
-
-// Export types for use in other components
-export type { CheckinData };
