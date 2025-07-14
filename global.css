@@ -2,82 +2,421 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Aurora Glass Design System - Essential Styles */
+/* Aurora Glass Design System - Core CSS Variables */
+:root {
+  /* Core Design System */
+  --ink: #0A0A0F;
+  --ink-90: #1A1A24;
+  --ink-80: #2A2A38;
+  --ink-70: #3A3A4C;
+  
+  --aurora-start: #9F7AEA;
+  --aurora-mid: #EC4899;
+  --aurora-end: #F59E0B;
+  
+  --surface-primary: rgba(159, 122, 234, 0.04);
+  --surface-secondary: rgba(159, 122, 234, 0.08);
+  --surface-elevated: rgba(26, 26, 36, 0.6);
+  --surface-glass: rgba(255, 255, 255, 0.02);
+  --surface-emergency: rgba(236, 72, 153, 0.08);
+  
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  --text-quaternary: rgba(255, 255, 255, 0.3);
+  
+  --energy-high: #34D399;
+  --energy-medium: #FBBF24;
+  --energy-low: #F87171;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  
+  --space-unit: 8px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-full: 9999px;
+  
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  background: linear-gradient(180deg, var(--ink) 0%, #0F0F1A 100%);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Component Layer */
 @layer components {
+  /* Glass Card System */
   .glass-card {
-    @apply bg-surface-glass rounded-lg border border-white/5;
+    background: var(--surface-glass);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+    transition: all var(--duration-normal) var(--easing-default);
   }
 
   .glass-card-primary {
-    @apply bg-surface-primary border-aurora-start/10;
+    background: linear-gradient(135deg, var(--surface-primary) 0%, var(--surface-secondary) 100%);
+    border-color: rgba(159, 122, 234, 0.1);
   }
 
   .glass-card-elevated {
-    @apply bg-surface-elevated;
+    background: var(--surface-elevated);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
   }
 
   .glass-card-emergency {
-    @apply bg-surface-emergency border-aurora-mid/20;
+    background: var(--surface-emergency);
+    border-color: rgba(236, 72, 153, 0.2);
   }
 
-  /* Aurora Button */
+  /* Aurora Button System */
   .aurora-btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--easing-default);
+    border: none;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   .aurora-btn-primary {
-    @apply bg-aurora-start text-white;
+    background: linear-gradient(135deg, var(--aurora-start) 0%, var(--aurora-mid) 100%);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(159, 122, 234, 0.3);
   }
 
   .aurora-btn-secondary {
-    @apply bg-surface-glass text-text-primary border border-white/10;
+    background: var(--surface-glass);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
   }
 
-  /* Emotion Buttons */
+  /* Size variants */
+  .aurora-btn-sm {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 14px;
+  }
+
+  .aurora-btn-md {
+    padding: var(--space-md) var(--space-lg);
+    font-size: 16px;
+  }
+
+  .aurora-btn-lg {
+    padding: var(--space-md) var(--space-xl);
+    font-size: 20px;
+  }
+
+  /* Emotion Selector */
+  .emotion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
   .emotion-btn {
-    @apply bg-surface-glass flex h-20 w-20 items-center justify-center rounded-lg border-2 border-transparent text-4xl;
+    width: 88px;
+    height: 88px;
+    background: var(--surface-glass);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--easing-bounce);
+    position: relative;
+    overflow: hidden;
   }
 
-  .emotion-btn-selected {
-    @apply border-aurora-start;
+  .emotion-btn::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-lg);
+    padding: 2px;
+    background: linear-gradient(135deg, var(--aurora-start), var(--aurora-mid));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity var(--duration-normal);
+  }
+
+  .emotion-btn:hover::before,
+  .emotion-btn-selected::before {
+    opacity: 1;
   }
 
   /* Context Pills */
+  .context-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+  }
+
   .context-pill {
-    @apply bg-surface-glass inline-flex items-center gap-2 rounded-full border border-white/5 px-4 py-2 text-sm;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--surface-glass);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-full);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--easing-default);
+  }
+
+  .context-pill:hover {
+    background: var(--surface-primary);
+    transform: scale(1.05);
+    border-color: rgba(159, 122, 234, 0.3);
   }
 
   .context-pill-selected {
-    @apply bg-aurora-start border-transparent text-white;
+    background: linear-gradient(135deg, var(--aurora-start), var(--aurora-mid));
+    color: white;
+    border-color: transparent;
   }
 
   /* Navigation Items */
   .nav-item {
-    @apply text-text-secondary flex flex-col items-center px-4 py-2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--easing-default);
+    position: relative;
+    color: var(--text-tertiary);
+  }
+
+  .nav-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--aurora-start), var(--aurora-mid));
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity var(--duration-normal);
+  }
+
+  .nav-item:hover {
+    color: var(--text-primary);
   }
 
   .nav-item-active {
-    @apply text-aurora-start;
+    color: var(--text-primary);
   }
 
-  /* ADHD-friendly styles */
+  .nav-item-active::before {
+    opacity: 0.1;
+  }
+
+  /* Emergency Components */
+  .emergency-card {
+    background: var(--surface-emergency);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(236, 72, 153, 0.2);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+    transition: all var(--duration-normal) var(--easing-default);
+  }
+
+  .emergency-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--aurora-mid), transparent);
+    transform: translateX(-100%);
+    transition: transform var(--duration-slow) ease-out;
+  }
+
+  .emergency-card:hover::before {
+    transform: translateX(100%);
+  }
+
+  /* ADHD-Friendly Utilities */
   .adhd-focus {
-    @apply focus:ring-aurora-start focus:outline-none focus:ring-2 focus:ring-opacity-50;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(159, 122, 234, 0.5);
   }
 
   .touch-target {
-    @apply min-h-[44px] min-w-[44px];
+    min-height: 44px;
+    min-width: 44px;
   }
 
   .gentle-hover {
-    @apply duration-normal transition-all;
+    transition: all var(--duration-normal) var(--easing-default);
+  }
+
+  .gentle-hover:hover {
+    transform: translateY(-2px);
+    opacity: 0.8;
+  }
+
+  .gentle-press:active {
+    transform: scale(0.98);
+  }
+
+  /* Time Visualization */
+  .time-viz {
+    position: relative;
+  }
+
+  .time-ring-outer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      var(--aurora-start) 0deg,
+      var(--aurora-mid) 120deg,
+      var(--aurora-end) 240deg,
+      var(--aurora-start) 360deg
+    );
+    opacity: 0.2;
+    animation: rotate 60s linear infinite;
+    filter: blur(20px);
+  }
+
+  /* Pattern Graph */
+  .pattern-graph {
+    height: 120px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-xs);
+  }
+
+  .energy-bar {
+    flex: 1;
+    background: var(--surface-glass);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    position: relative;
+    transition: all var(--duration-normal) var(--easing-default);
+    min-height: 10%;
+  }
+
+  .energy-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: inherit;
+    transition: all var(--duration-slow) var(--easing-default);
+  }
+
+  .energy-bar-low::after {
+    background: linear-gradient(to top, var(--energy-low), transparent);
+    height: 100%;
+    opacity: 0.8;
+  }
+
+  .energy-bar-medium::after {
+    background: linear-gradient(to top, var(--energy-medium), transparent);
+    height: 100%;
+    opacity: 0.8;
+  }
+
+  .energy-bar-high::after {
+    background: linear-gradient(to top, var(--energy-high), transparent);
+    height: 100%;
+    opacity: 0.8;
+  }
+
+  /* Reality Check Components */
+  .reality-check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: rgba(52, 211, 153, 0.05);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(52, 211, 153, 0.1);
+    font-size: 14px;
+    line-height: 1.5;
+    transition: all var(--duration-normal) var(--easing-default);
+  }
+
+  .reality-check:hover {
+    background: rgba(52, 211, 153, 0.08);
+    transform: translateX(4px);
+  }
+
+  .check-icon {
+    width: 24px;
+    height: 24px;
+    background: rgba(52, 211, 153, 0.2);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--energy-high);
   }
 }
 
-/* Simple animations */
+/* Animations */
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
 @keyframes breathe {
-  0%,
-  100% {
+  0%, 100% {
     transform: scale(0.95);
     opacity: 0.7;
   }
@@ -87,12 +426,78 @@
   }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-emergency {
+  0%, 100% { 
+    box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4); 
+  }
+  50% { 
+    box-shadow: 0 10px 40px rgba(236, 72, 153, 0.6); 
+  }
+}
+
 @keyframes gentle-pulse {
-  0%,
-  100% {
-    opacity: 0.7;
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(159, 122, 234, 0.4);
   }
   50% {
-    opacity: 1;
+    box-shadow: 0 0 0 8px rgba(159, 122, 234, 0);
+  }
+}
+
+/* Utility Classes */
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-emergency {
+  animation: pulse-emergency 3s ease-in-out infinite;
+}
+
+.animate-gentle-pulse {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 375px) {
+  .emotion-btn {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+  }
+  
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus Styles for ADHD */
+.adhd-focus:focus {
+  outline: 2px solid var(--aurora-start);
+  outline-offset: 2px;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Already dark by default */
   }
 }

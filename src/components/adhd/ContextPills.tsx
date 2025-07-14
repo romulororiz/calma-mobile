@@ -8,76 +8,71 @@ import Animated, {
 	runOnJS,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import {
 	COLORS,
 	SPACING,
-	BORDER_RADIUS,
+	LAYOUT,
 	ANIMATION,
-	ADHD_CONFIG,
+	ADHD,
 } from '../../constants/theme';
 
 interface ContextOption {
 	id: string;
 	icon: string;
 	label: string;
-	category: 'time' | 'location' | 'energy' | 'activity' | 'weather';
+	category?: 'medication' | 'energy' | 'location' | 'activity' | 'other';
 }
 
 interface ContextPillsProps {
 	title?: string;
-	options: ContextOption[];
+	options?: ContextOption[];
 	selected: string[];
 	onChange: (selected: string[]) => void;
 	maxSelections?: number;
 	disabled?: boolean;
 	hapticFeedback?: boolean;
+	className?: string;
 }
 
-const CONTEXT_OPTIONS: ContextOption[] = [
-	// Time
-	{ id: 'morning', icon: '🌅', label: 'Morning', category: 'time' },
-	{ id: 'afternoon', icon: '☀️', label: 'Afternoon', category: 'time' },
-	{ id: 'evening', icon: '🌆', label: 'Evening', category: 'time' },
-	{ id: 'night', icon: '🌙', label: 'Night', category: 'time' },
-
-	// Location
-	{ id: 'home', icon: '🏠', label: 'Home', category: 'location' },
-	{ id: 'work', icon: '💼', label: 'Work', category: 'location' },
-	{ id: 'outside', icon: '🌳', label: 'Outside', category: 'location' },
-	{ id: 'traveling', icon: '🚗', label: 'Traveling', category: 'location' },
-
-	// Energy
-	{ id: 'energetic', icon: '⚡', label: 'Energetic', category: 'energy' },
+const DEFAULT_CONTEXT_OPTIONS: ContextOption[] = [
+	// Medication & Health
+	{ id: 'meds_taken', icon: '💊', label: 'Meds taken', category: 'medication' },
+	{ id: 'no_meds', icon: '💊', label: 'No meds', category: 'medication' },
+	
+	// Energy States
 	{ id: 'tired', icon: '😴', label: 'Tired', category: 'energy' },
+	{ id: 'energetic', icon: '⚡', label: 'Energetic', category: 'energy' },
 	{ id: 'focused', icon: '🎯', label: 'Focused', category: 'energy' },
 	{ id: 'scattered', icon: '🌪️', label: 'Scattered', category: 'energy' },
-
+	
+	// Location
+	{ id: 'at_home', icon: '🏠', label: 'At home', category: 'location' },
+	{ id: 'at_work', icon: '💼', label: 'Working', category: 'location' },
+	{ id: 'outside', icon: '🌳', label: 'Outside', category: 'location' },
+	
 	// Activity
-	{ id: 'working', icon: '💻', label: 'Working', category: 'activity' },
-	{ id: 'relaxing', icon: '🛋️', label: 'Relaxing', category: 'activity' },
-	{ id: 'socializing', icon: '👥', label: 'With People', category: 'activity' },
-	{ id: 'alone', icon: '🧘', label: 'Alone Time', category: 'activity' },
-
-	// Weather
-	{ id: 'sunny', icon: '☀️', label: 'Sunny', category: 'weather' },
-	{ id: 'cloudy', icon: '☁️', label: 'Cloudy', category: 'weather' },
-	{ id: 'rainy', icon: '🌧️', label: 'Rainy', category: 'weather' },
-	{ id: 'cold', icon: '❄️', label: 'Cold', category: 'weather' },
+	{ id: 'caffeinated', icon: '☕', label: 'Caffeinated', category: 'activity' },
+	{ id: 'socializing', icon: '👥', label: 'With people', category: 'activity' },
+	{ id: 'alone', icon: '🧘', label: 'Alone time', category: 'activity' },
+	
+	// Other
+	{ id: 'stressed', icon: '😰', label: 'Stressed', category: 'other' },
+	{ id: 'calm', icon: '😌', label: 'Calm', category: 'other' },
+	{ id: 'overwhelmed', icon: '🤯', label: 'Overwhelmed', category: 'other' },
 ];
 
-const AnimatedTouchableOpacity =
-	Animated.createAnimatedComponent(TouchableOpacity);
-
-export default function ContextPills({
+const ContextPills: React.FC<ContextPillsProps> = ({
 	title = 'Add context (optional)',
-	options = CONTEXT_OPTIONS,
+	options = DEFAULT_CONTEXT_OPTIONS,
 	selected,
 	onChange,
-	maxSelections = ADHD_CONFIG.maxContextOptions,
+	maxSelections = 5,
 	disabled = false,
 	hapticFeedback = true,
-}: ContextPillsProps) {
+	className,
+}) => {
 	const triggerHaptic = () => {
 		if (hapticFeedback) {
 			Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -86,103 +81,53 @@ export default function ContextPills({
 
 	const handlePillPress = (optionId: string) => {
 		if (disabled) return;
-
-		runOnJS(triggerHaptic)();
-
+		
 		const isSelected = selected.includes(optionId);
-
+		let newSelected: string[];
+		
 		if (isSelected) {
 			// Remove from selection
-			onChange(selected.filter(id => id !== optionId));
+			newSelected = selected.filter(id => id !== optionId);
 		} else {
-			// Add to selection (respect max limit)
-			if (selected.length < maxSelections) {
-				onChange([...selected, optionId]);
+			// Add to selection if under limit
+			if (maxSelections && selected.length >= maxSelections) {
+				return; // Don't add if at max
 			}
+			newSelected = [...selected, optionId];
 		}
+		
+		runOnJS(triggerHaptic)();
+		onChange(newSelected);
 	};
 
-	// Group options by category for better organization
-	const groupedOptions = options.reduce(
-		(acc, option) => {
-			if (!acc[option.category]) {
-				acc[option.category] = [];
-			}
-			acc[option.category].push(option);
-			return acc;
-		},
-		{} as Record<string, ContextOption[]>
-	);
-
 	return (
-		<View style={{ width: '100%' }}>
-			{/* Title */}
-			<Text
-				style={{
-					color: COLORS.text.tertiary,
-					fontSize: 14,
-					fontFamily: 'Nunito_400Regular',
-					textTransform: 'uppercase',
-					letterSpacing: 0.5,
-					marginBottom: SPACING.md,
-					textAlign: 'center',
-				}}
-			>
-				{title}
-			</Text>
-
-			{/* Context pills in a scrollable container */}
-			<ScrollView
-				horizontal={false}
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{
-					flexGrow: 1,
-					alignItems: 'center',
-				}}
-			>
-				<View
+		<View className={className}>
+			{title && (
+				<Text 
+					className="text-center text-text-tertiary text-sm font-semibold uppercase tracking-wide mb-4"
 					style={{
-						flexDirection: 'row',
-						flexWrap: 'wrap',
-						justifyContent: 'center',
-						gap: SPACING.sm,
-						maxWidth: '100%',
-						paddingHorizontal: SPACING.md,
+						fontFamily: 'Nunito',
+						letterSpacing: 0.05,
 					}}
 				>
-					{options.map(option => (
-						<ContextPill
-							key={option.id}
-							option={option}
-							selected={selected.includes(option.id)}
-							onPress={() => handlePillPress(option.id)}
-							disabled={
-								disabled ||
-								(!selected.includes(option.id) &&
-									selected.length >= maxSelections)
-							}
-						/>
-					))}
-				</View>
-			</ScrollView>
-
-			{/* Selection counter */}
-			{selected.length > 0 && (
-				<Text
-					style={{
-						color: COLORS.text.quaternary,
-						fontSize: 12,
-						fontFamily: 'Nunito_400Regular',
-						textAlign: 'center',
-						marginTop: SPACING.md,
-					}}
-				>
-					{selected.length} / {maxSelections} selected
+					{title}
 				</Text>
 			)}
+			
+			<View className="flex-row flex-wrap justify-center" style={{ gap: SPACING.sm }}>
+				{options.map((option) => (
+					<ContextPill
+						key={option.id}
+						option={option}
+						selected={selected.includes(option.id)}
+						onPress={() => handlePillPress(option.id)}
+						disabled={disabled}
+					/>
+				))}
+			</View>
 		</View>
 	);
-}
+};
 
 interface ContextPillProps {
 	option: ContextOption;
@@ -191,152 +136,155 @@ interface ContextPillProps {
 	disabled: boolean;
 }
 
-function ContextPill({
+const ContextPill: React.FC<ContextPillProps> = ({
 	option,
 	selected,
 	onPress,
 	disabled,
-}: ContextPillProps) {
+}) => {
 	const scale = useSharedValue(1);
-	const borderOpacity = useSharedValue(selected ? 1 : 0);
-	const backgroundOpacity = useSharedValue(selected ? 1 : 0);
-
-	React.useEffect(() => {
-		borderOpacity.value = withTiming(selected ? 1 : 0, {
-			duration: ANIMATION.duration.normal,
-		});
-		backgroundOpacity.value = withTiming(selected ? 1 : 0, {
-			duration: ANIMATION.duration.normal,
-		});
-	}, [selected, borderOpacity, backgroundOpacity]);
-
+	const opacity = useSharedValue(1);
+	
+	// Animation styles
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
 			transform: [{ scale: scale.value }],
+			opacity: opacity.value,
 		};
 	});
 
-	const borderAnimatedStyle = useAnimatedStyle(() => {
-		return {
-			opacity: borderOpacity.value,
-		};
-	});
-
-	const backgroundAnimatedStyle = useAnimatedStyle(() => {
-		return {
-			opacity: backgroundOpacity.value,
-		};
-	});
-
+	// Interaction handlers
 	const handlePressIn = () => {
-		if (!disabled) {
-			scale.value = withSpring(0.95, {
-				damping: 15,
-				stiffness: 300,
-			});
-		}
+		if (disabled) return;
+		
+		scale.value = withSpring(0.95, {
+			damping: 15,
+			stiffness: 300,
+		});
+		
+		opacity.value = withTiming(0.8, {
+			duration: ANIMATION.duration.fast,
+		});
 	};
 
 	const handlePressOut = () => {
-		if (!disabled) {
+		if (disabled) return;
+		
+		scale.value = withSpring(1, {
+			damping: 15,
+			stiffness: 300,
+		});
+		
+		opacity.value = withTiming(1, {
+			duration: ANIMATION.duration.fast,
+		});
+	};
+
+	const handlePress = () => {
+		if (disabled) return;
+		
+		// Haptic feedback
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+		
+		// Scale animation feedback
+		scale.value = withSpring(1.05, {
+			damping: 15,
+			stiffness: 300,
+		});
+		
+		// Reset after animation
+		setTimeout(() => {
 			scale.value = withSpring(1, {
 				damping: 15,
 				stiffness: 300,
 			});
-		}
+		}, 100);
+		
+		onPress();
 	};
 
 	return (
-		<View style={{ position: 'relative' }}>
-			{/* Gradient border for selected state */}
-			<Animated.View
-				style={[
-					{
-						position: 'absolute',
-						top: -1,
-						left: -1,
-						right: -1,
-						bottom: -1,
-						borderRadius: BORDER_RADIUS.full + 1,
-						zIndex: 1,
-					},
-					borderAnimatedStyle,
-				]}
-			>
-				<LinearGradient
-					colors={[COLORS.aurora.start, COLORS.aurora.mid]}
-					style={{
-						flex: 1,
-						borderRadius: BORDER_RADIUS.full + 1,
-					}}
-				/>
-			</Animated.View>
-
-			{/* Background highlight for selected state */}
-			<Animated.View
-				style={[
-					{
-						position: 'absolute',
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-						borderRadius: BORDER_RADIUS.full,
-						backgroundColor: COLORS.surface.primary,
-						zIndex: 2,
-					},
-					backgroundAnimatedStyle,
-				]}
-			/>
-
-			{/* Main pill */}
-			<AnimatedTouchableOpacity
-				onPress={onPress}
+		<Animated.View style={animatedStyle}>
+			<TouchableOpacity
 				onPressIn={handlePressIn}
 				onPressOut={handlePressOut}
+				onPress={handlePress}
 				disabled={disabled}
-				style={[
-					{
-						flexDirection: 'row',
-						alignItems: 'center',
-						paddingHorizontal: SPACING.md,
-						paddingVertical: SPACING.sm,
-						backgroundColor: COLORS.surface.glass,
-						borderRadius: BORDER_RADIUS.full,
-						borderWidth: 1,
-						borderColor: selected ? 'transparent' : 'rgba(255, 255, 255, 0.05)',
-						minHeight: 36, // ADHD-friendly touch target
-						zIndex: 3,
-						opacity: disabled ? 0.5 : 1,
-					},
-					animatedStyle,
-				]}
-				accessibilityRole='button'
+				activeOpacity={0.8}
+				style={{
+					borderRadius: LAYOUT.borderRadius.full,
+					overflow: 'hidden',
+					position: 'relative',
+					minHeight: ADHD.touchTarget.minimum,
+				}}
+				accessibilityRole="button"
 				accessibilityLabel={`${option.label} context option`}
 				accessibilityState={{ selected, disabled }}
 			>
-				<Text
-					style={{
-						fontSize: 16,
-						marginRight: SPACING.xs,
-					}}
-				>
-					{option.icon}
-				</Text>
-
-				<Text
-					style={{
-						color: selected ? COLORS.text.primary : COLORS.text.secondary,
-						fontSize: 14,
-						fontFamily: selected ? 'Nunito_600SemiBold' : 'Nunito_400Regular',
-					}}
-				>
-					{option.label}
-				</Text>
-			</AnimatedTouchableOpacity>
-		</View>
+				{/* Background */}
+				{selected ? (
+					<LinearGradient
+						colors={[COLORS.aurora.start, COLORS.aurora.mid]}
+						start={{ x: 0, y: 0 }}
+						end={{ x: 1, y: 1 }}
+						style={{
+							paddingHorizontal: SPACING.md,
+							paddingVertical: SPACING.sm,
+							flexDirection: 'row',
+							alignItems: 'center',
+							gap: SPACING.xs,
+						}}
+					>
+						<Text style={{ fontSize: 16 }}>{option.icon}</Text>
+						<Text 
+							className="text-white font-semibold text-sm"
+							style={{
+								fontFamily: 'Nunito',
+							}}
+						>
+							{option.label}
+						</Text>
+					</LinearGradient>
+				) : (
+					<View
+						style={{
+							backgroundColor: COLORS.surface.glass,
+							borderWidth: 1,
+							borderColor: 'rgba(255, 255, 255, 0.05)',
+							paddingHorizontal: SPACING.md,
+							paddingVertical: SPACING.sm,
+							flexDirection: 'row',
+							alignItems: 'center',
+							gap: SPACING.xs,
+						}}
+					>
+						<BlurView
+							intensity={20}
+							style={{
+								position: 'absolute',
+								top: 0,
+								left: 0,
+								right: 0,
+								bottom: 0,
+							}}
+						/>
+						<View style={{ position: 'relative', zIndex: 1, flexDirection: 'row', alignItems: 'center', gap: SPACING.xs }}>
+							<Text style={{ fontSize: 16 }}>{option.icon}</Text>
+							<Text 
+								className="text-text-primary font-medium text-sm"
+								style={{
+									fontFamily: 'Nunito',
+								}}
+							>
+								{option.label}
+							</Text>
+						</View>
+					</View>
+				)}
+			</TouchableOpacity>
+		</Animated.View>
 	);
-}
+};
 
-// Export the default context options for use in other components
-export { CONTEXT_OPTIONS };
+export { DEFAULT_CONTEXT_OPTIONS as CONTEXT_OPTIONS };
+export default ContextPills;

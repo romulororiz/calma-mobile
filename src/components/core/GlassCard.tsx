@@ -1,224 +1,238 @@
 import React from 'react';
-import { TouchableOpacity, View, ViewStyle } from 'react-native';
+import { 
+  View, 
+  TouchableOpacity, 
+  ViewStyle, 
+  TouchableOpacityProps,
+} from 'react-native';
 import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
-  interpolate,
-  Extrapolate,
 } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SPACING, BORDER_RADIUS, ANIMATION } from '../../constants/theme';
+import * as Haptics from 'expo-haptics';
+import { COLORS, LAYOUT, SPACING, ANIMATION } from '../../constants/theme';
 
-interface GlassCardProps {
+interface GlassCardProps extends TouchableOpacityProps {
   variant?: 'default' | 'primary' | 'elevated' | 'emergency';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+  padding?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
   onPress?: () => void;
-  disabled?: boolean;
   style?: ViewStyle;
   className?: string;
-  blur?: boolean;
-  glow?: boolean;
-  animated?: boolean;
+  disabled?: boolean;
+  hapticFeedback?: boolean;
+  glowEffect?: boolean;
+  blurIntensity?: number;
 }
 
-const AnimatedBlurView = Animated.createAnimatedComponent(BlurView) as any;
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
-
-const VARIANTS = {
-  default: {
-    background: COLORS.surface.glass,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
-    glowColor: 'rgba(159, 122, 234, 0.1)',
-  },
-  primary: {
-    background: COLORS.surface.primary,
-    borderColor: 'rgba(159, 122, 234, 0.1)',
-    glowColor: 'rgba(159, 122, 234, 0.2)',
-  },
-  elevated: {
-    background: COLORS.surface.elevated,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    glowColor: 'rgba(159, 122, 234, 0.15)',
-  },
-  emergency: {
-    background: COLORS.surface.emergency,
-    borderColor: 'rgba(236, 72, 153, 0.2)',
-    glowColor: 'rgba(236, 72, 153, 0.3)',
-  },
-} as const;
-
-const SIZES = {
-  sm: { minHeight: 60, borderRadius: BORDER_RADIUS.sm },
-  md: { minHeight: 80, borderRadius: BORDER_RADIUS.md },
-  lg: { minHeight: 120, borderRadius: BORDER_RADIUS.lg },
-  xl: { minHeight: 160, borderRadius: BORDER_RADIUS.xl },
-} as const;
-
-const PADDINGS = {
-  none: 0,
-  sm: SPACING.sm,
-  md: SPACING.md,
-  lg: SPACING.lg,
-  xl: SPACING.xl,
-} as const;
-
-export default function GlassCard({
+const GlassCard: React.FC<GlassCardProps> = ({
   variant = 'default',
-  size = 'md',
   padding = 'lg',
   children,
   onPress,
-  disabled = false,
   style,
-  className = '',
-  blur = true,
-  glow = false,
-  animated = true,
-}: GlassCardProps) {
-  const scale = useSharedValue(1);
-  const opacity = useSharedValue(1);
-  const glowOpacity = useSharedValue(glow ? 0.3 : 0);
+  className,
+  disabled = false,
+  hapticFeedback = true,
+  glowEffect = false,
+  blurIntensity = 40,
+  ...props
+}) => {
+  const scaleValue = useSharedValue(1);
+  const glowValue = useSharedValue(0);
 
-  const currentVariant = VARIANTS[variant];
-  const currentSize = SIZES[size];
-  const currentPadding = PADDINGS[padding];
-
-  // Animation for press interactions
+  // Animation styles
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: scale.value }],
-      opacity: opacity.value,
+      transform: [{ scale: scaleValue.value }],
     };
   });
 
-  // Glow animation
-  const glowAnimatedStyle = useAnimatedStyle(() => {
+  const glowStyle = useAnimatedStyle(() => {
     return {
-      opacity: glowOpacity.value,
+      opacity: glowValue.value,
     };
   });
 
-  // Handle press interactions with ADHD-friendly feedback
+  // Padding configuration
+  const paddingConfig = {
+    sm: SPACING.sm,
+    md: SPACING.md,
+    lg: SPACING.lg,
+  };
+
+  // Variant styles
+  const getVariantStyles = () => {
+    switch (variant) {
+      case 'primary':
+        return {
+          backgroundColor: COLORS.surface.primary,
+          borderColor: `${COLORS.aurora.start}1A`, // 10% opacity
+        };
+      case 'elevated':
+        return {
+          backgroundColor: COLORS.surface.elevated,
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        };
+      case 'emergency':
+        return {
+          backgroundColor: COLORS.surface.emergency,
+          borderColor: `${COLORS.aurora.mid}33`, // 20% opacity
+        };
+      default:
+        return {
+          backgroundColor: COLORS.surface.glass,
+          borderColor: 'rgba(255, 255, 255, 0.05)',
+        };
+    }
+  };
+
+  // Interaction handlers
   const handlePressIn = () => {
-    if (!disabled && animated) {
-      scale.value = withSpring(0.98, {
-        damping: 15,
-        stiffness: 300,
-      });
-      glowOpacity.value = withTiming(0.6, {
+    if (disabled) return;
+    
+    if (hapticFeedback) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    
+    scaleValue.value = withSpring(0.98, {
+      damping: 15,
+      stiffness: 300,
+    });
+    
+    if (glowEffect) {
+      glowValue.value = withTiming(1, {
         duration: ANIMATION.duration.fast,
       });
     }
   };
 
   const handlePressOut = () => {
-    if (!disabled && animated) {
-      scale.value = withSpring(1, {
-        damping: 15,
-        stiffness: 300,
-      });
-      glowOpacity.value = withTiming(glow ? 0.3 : 0, {
+    if (disabled) return;
+    
+    scaleValue.value = withSpring(1, {
+      damping: 15,
+      stiffness: 300,
+    });
+    
+    if (glowEffect) {
+      glowValue.value = withTiming(0, {
         duration: ANIMATION.duration.normal,
       });
     }
   };
 
   const handlePress = () => {
-    if (!disabled && onPress) {
-      onPress();
+    if (disabled || !onPress) return;
+    
+    if (hapticFeedback) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
+    
+    onPress();
   };
 
-  const containerStyle: ViewStyle = {
-    minHeight: currentSize.minHeight,
-    borderRadius: currentSize.borderRadius,
+  const variantStyles = getVariantStyles();
+  const isInteractive = !!onPress && !disabled;
+
+  const cardStyle: ViewStyle = {
+    borderRadius: LAYOUT.borderRadius.lg,
+    borderWidth: 1,
+    padding: paddingConfig[padding],
+    position: 'relative',
     overflow: 'hidden',
+    ...variantStyles,
+    opacity: disabled ? 0.4 : 1,
     ...style,
   };
 
-  const contentStyle: ViewStyle = {
-    flex: 1,
-    padding: currentPadding,
-    backgroundColor: currentVariant.background,
-    borderWidth: 1,
-    borderColor: currentVariant.borderColor,
-    borderRadius: currentSize.borderRadius,
-    position: 'relative',
+  // Render glow effect for primary variant
+  const renderGlow = () => {
+    if (!glowEffect || variant !== 'primary') return null;
+    
+    return (
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            top: -50,
+            right: -50,
+            width: 200,
+            height: 200,
+            borderRadius: 100,
+            opacity: 0.3,
+          },
+          glowStyle,
+        ]}
+      >
+        <LinearGradient
+          colors={[COLORS.aurora.start, 'transparent']}
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: 100,
+          }}
+        />
+      </Animated.View>
+    );
   };
 
-  const Component = onPress ? AnimatedTouchableOpacity : Animated.View;
+  if (isInteractive) {
+    return (
+      <Animated.View style={animatedStyle}>
+        <TouchableOpacity
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          onPress={handlePress}
+          disabled={disabled}
+          activeOpacity={0.9}
+          style={cardStyle}
+          className={className}
+          {...props}
+        >
+          {renderGlow()}
+          <BlurView
+            intensity={blurIntensity}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              borderRadius: LAYOUT.borderRadius.lg,
+            }}
+          />
+          <View style={{ position: 'relative', zIndex: 1 }}>
+            {children}
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  }
 
   return (
-    <View className={className} style={containerStyle}>
-      {/* Glow effect */}
-      {glow && (
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              top: -2,
-              left: -2,
-              right: -2,
-              bottom: -2,
-              borderRadius: currentSize.borderRadius + 2,
-              backgroundColor: currentVariant.glowColor,
-              zIndex: 0,
-            },
-            glowAnimatedStyle,
-          ]}
-        />
-      )}
-
-      <Component
-        onPress={handlePress}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        disabled={disabled}
-        style={animatedStyle}
-        activeOpacity={0.8}
-        {...(onPress && {
-          accessibilityRole: 'button',
-          accessibilityState: { disabled },
-        })}>
-        {blur ? (
-          <AnimatedBlurView
-            intensity={40}
-            style={[
-              contentStyle,
-              {
-                backgroundColor: 'transparent',
-              },
-            ]}>
-            {/* Gradient overlay for glass effect */}
-            <LinearGradient
-              colors={[
-                'rgba(255, 255, 255, 0.05)',
-                'rgba(255, 255, 255, 0.02)',
-                'rgba(255, 255, 255, 0.01)',
-              ]}
-              locations={[0, 0.5, 1]}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                borderRadius: currentSize.borderRadius,
-              }}
-            />
-
-            {/* Content */}
-            <View style={{ flex: 1, zIndex: 1 }}>{children}</View>
-          </AnimatedBlurView>
-        ) : (
-          <View style={contentStyle}>{children}</View>
-        )}
-      </Component>
-    </View>
+    <Animated.View style={[cardStyle, animatedStyle]} className={className}>
+      {renderGlow()}
+      <BlurView
+        intensity={blurIntensity}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          borderRadius: LAYOUT.borderRadius.lg,
+        }}
+      />
+      <View style={{ position: 'relative', zIndex: 1 }}>
+        {children}
+      </View>
+    </Animated.View>
   );
-}
+};
+
+export default GlassCard;

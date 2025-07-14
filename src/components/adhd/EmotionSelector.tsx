@@ -9,162 +9,145 @@ import Animated, {
 	runOnJS,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import {
 	COLORS,
 	SPACING,
-	BORDER_RADIUS,
+	LAYOUT,
 	ANIMATION,
-	ADHD_CONFIG,
+	ADHD,
 } from '../../constants/theme';
 
 interface EmotionOption {
 	id: string;
 	emoji: string;
 	label: string;
-	description: string;
-	color: string;
+	description?: string;
 }
 
 interface EmotionSelectorProps {
+	options?: EmotionOption[];
 	selected?: string;
 	onChange: (emotionId: string) => void;
 	disabled?: boolean;
 	size?: 'sm' | 'md' | 'lg';
 	showLabels?: boolean;
 	hapticFeedback?: boolean;
+	className?: string;
 }
 
-const EMOTIONS: EmotionOption[] = [
+const DEFAULT_EMOTIONS: EmotionOption[] = [
 	{
-		id: 'good',
+		id: 'happy',
 		emoji: '😊',
-		label: 'Good',
+		label: 'Happy',
 		description: 'Feeling positive and energetic',
-		color: COLORS.energy.high,
 	},
 	{
-		id: 'meh',
+		id: 'neutral',
 		emoji: '😐',
-		label: 'Meh',
-		description: 'Feeling neutral or tired',
-		color: COLORS.energy.medium,
+		label: 'Neutral',
+		description: 'Feeling calm or balanced',
 	},
 	{
-		id: 'support',
+		id: 'sad',
+		emoji: '😔',
+		label: 'Sad',
+		description: 'Feeling down or low energy',
+	},
+	{
+		id: 'frustrated',
+		emoji: '😤',
+		label: 'Frustrated',
+		description: 'Feeling annoyed or stressed',
+	},
+	{
+		id: 'anxious',
+		emoji: '😰',
+		label: 'Anxious',
+		description: 'Feeling worried or overwhelmed',
+	},
+	{
+		id: 'supported',
 		emoji: '🫂',
-		label: 'Need Support',
-		description: 'Could use some help right now',
-		color: COLORS.aurora.mid,
+		label: 'Supported',
+		description: 'Feeling cared for and understood',
 	},
 ];
 
-const SIZES = {
-	sm: {
-		buttonSize: 72,
-		emojiSize: 32,
-		fontSize: 14,
-		spacing: SPACING.md,
-	},
-	md: {
-		buttonSize: 88,
-		emojiSize: 40,
-		fontSize: 16,
-		spacing: SPACING.lg,
-	},
-	lg: {
-		buttonSize: 104,
-		emojiSize: 48,
-		fontSize: 18,
-		spacing: SPACING.xl,
-	},
-} as const;
-
-const AnimatedTouchableOpacity =
-	Animated.createAnimatedComponent(TouchableOpacity);
-
-export default function EmotionSelector({
+const EmotionSelector: React.FC<EmotionSelectorProps> = ({
+	options = DEFAULT_EMOTIONS,
 	selected,
 	onChange,
 	disabled = false,
 	size = 'md',
-	showLabels = true,
+	showLabels = false,
 	hapticFeedback = true,
-}: EmotionSelectorProps) {
-	const currentSize = SIZES[size];
+	className,
+}) => {
 	const screenWidth = Dimensions.get('window').width;
+	const containerPadding = SPACING.lg * 2;
+	const availableWidth = screenWidth - containerPadding;
+	const gap = SPACING.lg;
+	const buttonWidth = (availableWidth - gap * 2) / 3; // 3 columns
 
-	// Calculate responsive sizing for 70% whitespace rule
-	const maxContentWidth = screenWidth * 0.7;
-	const buttonSpacing = currentSize.spacing;
-	const totalButtonWidth = currentSize.buttonSize * 3 + buttonSpacing * 2;
-	const shouldScale = totalButtonWidth > maxContentWidth;
-	const scaleFactor = shouldScale ? maxContentWidth / totalButtonWidth : 1;
+	const sizeConfig = {
+		sm: {
+			buttonSize: Math.min(buttonWidth, 72),
+			emojiSize: 28,
+			fontSize: 12,
+		},
+		md: {
+			buttonSize: Math.min(buttonWidth, 88),
+			emojiSize: 36,
+			fontSize: 14,
+		},
+		lg: {
+			buttonSize: Math.min(buttonWidth, 104),
+			emojiSize: 44,
+			fontSize: 16,
+		},
+	};
 
-	const finalButtonSize = currentSize.buttonSize * scaleFactor;
-	const finalEmojiSize = currentSize.emojiSize * scaleFactor;
-	const finalSpacing = buttonSpacing * scaleFactor;
+	const config = sizeConfig[size];
 
 	const triggerHaptic = () => {
 		if (hapticFeedback) {
-			Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+			Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		}
 	};
 
 	const handleEmotionPress = (emotionId: string) => {
-		if (!disabled) {
-			runOnJS(triggerHaptic)();
-			onChange(emotionId);
-		}
+		if (disabled) return;
+		
+		runOnJS(triggerHaptic)();
+		onChange(emotionId);
 	};
 
 	return (
-		<View style={{ alignItems: 'center', width: '100%' }}>
-			{/* Main emotion grid */}
-			<View
-				style={{
-					flexDirection: 'row',
-					justifyContent: 'center',
-					alignItems: 'center',
-					gap: finalSpacing,
-					width: '100%',
-					maxWidth: maxContentWidth,
-				}}
+		<View className={className}>
+			<View 
+				className="flex-row flex-wrap justify-center"
+				style={{ gap: gap }}
 			>
-				{EMOTIONS.map(emotion => (
+				{options.map((emotion) => (
 					<EmotionButton
 						key={emotion.id}
 						emotion={emotion}
 						selected={selected === emotion.id}
 						onPress={() => handleEmotionPress(emotion.id)}
 						disabled={disabled}
-						buttonSize={finalButtonSize}
-						emojiSize={finalEmojiSize}
+						buttonSize={config.buttonSize}
+						emojiSize={config.emojiSize}
 						showLabel={showLabels}
-						fontSize={currentSize.fontSize}
+						fontSize={config.fontSize}
 					/>
 				))}
 			</View>
-
-			{/* Selected emotion description */}
-			{selected && showLabels && (
-				<View style={{ marginTop: SPACING.lg, alignItems: 'center' }}>
-					<Text
-						style={{
-							color: COLORS.text.secondary,
-							fontSize: 14,
-							fontFamily: 'Nunito_400Regular',
-							textAlign: 'center',
-							lineHeight: 20,
-						}}
-					>
-						{EMOTIONS.find(e => e.id === selected)?.description}
-					</Text>
-				</View>
-			)}
 		</View>
 	);
-}
+};
 
 interface EmotionButtonProps {
 	emotion: EmotionOption;
@@ -177,7 +160,7 @@ interface EmotionButtonProps {
 	fontSize: number;
 }
 
-function EmotionButton({
+const EmotionButton: React.FC<EmotionButtonProps> = ({
 	emotion,
 	selected,
 	onPress,
@@ -186,21 +169,11 @@ function EmotionButton({
 	emojiSize,
 	showLabel,
 	fontSize,
-}: EmotionButtonProps) {
+}) => {
 	const scale = useSharedValue(1);
 	const borderOpacity = useSharedValue(selected ? 1 : 0);
-	const glowOpacity = useSharedValue(selected ? 0.3 : 0);
-
-	// Update selection state
-	React.useEffect(() => {
-		borderOpacity.value = withTiming(selected ? 1 : 0, {
-			duration: ANIMATION.duration.normal,
-		});
-		glowOpacity.value = withTiming(selected ? 0.3 : 0, {
-			duration: ANIMATION.duration.normal,
-		});
-	}, [selected, borderOpacity, glowOpacity]);
-
+	
+	// Animation styles
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
 			transform: [{ scale: scale.value }],
@@ -213,120 +186,147 @@ function EmotionButton({
 		};
 	});
 
-	const glowAnimatedStyle = useAnimatedStyle(() => {
-		return {
-			opacity: glowOpacity.value,
-		};
-	});
-
+	// Interaction handlers
 	const handlePressIn = () => {
-		if (!disabled) {
-			scale.value = withSpring(0.95, {
-				damping: 15,
-				stiffness: 300,
-			});
-		}
+		if (disabled) return;
+		
+		scale.value = withSpring(0.95, {
+			damping: 15,
+			stiffness: 300,
+		});
 	};
 
 	const handlePressOut = () => {
-		if (!disabled) {
-			scale.value = withSpring(1, {
-				damping: 15,
-				stiffness: 300,
-			});
-		}
+		if (disabled) return;
+		
+		scale.value = withSpring(1, {
+			damping: 15,
+			stiffness: 300,
+		});
 	};
 
+	const handlePress = () => {
+		if (disabled) return;
+		
+		// Haptic feedback
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+		
+		// Animate border
+		borderOpacity.value = withTiming(1, {
+			duration: ANIMATION.duration.normal,
+		});
+		
+		onPress();
+	};
+
+	// Update border opacity when selected changes
+	React.useEffect(() => {
+		borderOpacity.value = withTiming(selected ? 1 : 0, {
+			duration: ANIMATION.duration.normal,
+		});
+	}, [selected, borderOpacity]);
+
 	return (
-		<View style={{ alignItems: 'center' }}>
-			<View style={{ position: 'relative' }}>
-				{/* Glow effect */}
-				<Animated.View
-					style={[
-						{
-							position: 'absolute',
-							top: -4,
-							left: -4,
-							right: -4,
-							bottom: -4,
-							borderRadius: BORDER_RADIUS.lg + 4,
-							backgroundColor: emotion.color,
-							zIndex: 0,
-						},
-						glowAnimatedStyle,
-					]}
-				/>
-
-				{/* Gradient border */}
-				<Animated.View
-					style={[
-						{
-							position: 'absolute',
-							top: -2,
-							left: -2,
-							right: -2,
-							bottom: -2,
-							borderRadius: BORDER_RADIUS.lg + 2,
-							zIndex: 1,
-						},
-						borderAnimatedStyle,
-					]}
-				>
-					<LinearGradient
-						colors={[emotion.color, `${emotion.color}80`]}
-						style={{
-							flex: 1,
-							borderRadius: BORDER_RADIUS.lg + 2,
-						}}
-					/>
-				</Animated.View>
-
-				{/* Main button */}
-				<AnimatedTouchableOpacity
-					onPress={onPress}
+		<View>
+			<Animated.View style={animatedStyle}>
+				<TouchableOpacity
 					onPressIn={handlePressIn}
 					onPressOut={handlePressOut}
+					onPress={handlePress}
 					disabled={disabled}
-					style={[
-						{
-							width: buttonSize,
-							height: buttonSize,
-							backgroundColor: COLORS.surface.glass,
-							borderRadius: BORDER_RADIUS.lg,
-							justifyContent: 'center',
-							alignItems: 'center',
-							zIndex: 2,
-							// ADHD-friendly minimum touch target
-							minWidth: Math.max(buttonSize, 48),
-							minHeight: Math.max(buttonSize, 48),
-						},
-						animatedStyle,
-					]}
-					accessibilityRole='button'
-					accessibilityLabel={`${emotion.label}: ${emotion.description}`}
+					activeOpacity={0.8}
+					style={{
+						width: buttonSize,
+						height: buttonSize,
+						borderRadius: LAYOUT.borderRadius.lg,
+						position: 'relative',
+						overflow: 'hidden',
+					}}
+					accessibilityRole="button"
+					accessibilityLabel={`${emotion.label} emotion`}
 					accessibilityState={{ selected, disabled }}
 				>
-					<Text
+					{/* Gradient border effect */}
+					<Animated.View
+						style={[
+							{
+								position: 'absolute',
+								inset: -2,
+								borderRadius: LAYOUT.borderRadius.lg,
+								padding: 2,
+							},
+							borderAnimatedStyle,
+						]}
+					>
+						<LinearGradient
+							colors={[COLORS.aurora.start, COLORS.aurora.mid]}
+							start={{ x: 0, y: 0 }}
+							end={{ x: 1, y: 1 }}
+							style={{
+								flex: 1,
+								borderRadius: LAYOUT.borderRadius.lg,
+							}}
+						/>
+					</Animated.View>
+
+					{/* Background blur effect */}
+					<BlurView
+						intensity={40}
 						style={{
-							fontSize: emojiSize,
-							lineHeight: emojiSize * 1.2,
+							position: 'absolute',
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: 0,
+							borderRadius: LAYOUT.borderRadius.lg,
+						}}
+					/>
+
+					{/* Glass background */}
+					<View
+						style={{
+							position: 'absolute',
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: 0,
+							backgroundColor: COLORS.surface.glass,
+							borderRadius: LAYOUT.borderRadius.lg,
+							borderWidth: 2,
+							borderColor: 'transparent',
+						}}
+					/>
+
+					{/* Content */}
+					<View
+						style={{
+							flex: 1,
+							justifyContent: 'center',
+							alignItems: 'center',
+							position: 'relative',
+							zIndex: 1,
 						}}
 					>
-						{emotion.emoji}
-					</Text>
-				</AnimatedTouchableOpacity>
-			</View>
+						<Text
+							style={{
+								fontSize: emojiSize,
+								lineHeight: emojiSize * 1.2,
+							}}
+						>
+							{emotion.emoji}
+						</Text>
+					</View>
+				</TouchableOpacity>
+			</Animated.View>
 
 			{/* Label */}
 			{showLabel && (
 				<Text
+					className="text-center text-text-secondary mt-2"
 					style={{
-						color: selected ? COLORS.text.primary : COLORS.text.tertiary,
-						fontSize: fontSize * 0.8,
-						fontFamily: selected ? 'Nunito_600SemiBold' : 'Nunito_400Regular',
-						textAlign: 'center',
-						marginTop: SPACING.sm,
-						lineHeight: fontSize,
+						fontSize: fontSize,
+						fontFamily: 'Nunito',
+						opacity: disabled ? 0.4 : 1,
 					}}
 				>
 					{emotion.label}
@@ -334,4 +334,6 @@ function EmotionButton({
 			)}
 		</View>
 	);
-}
+};
+
+export default EmotionSelector;
