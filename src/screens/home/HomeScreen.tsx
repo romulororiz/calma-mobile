@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import GlassCard from '../../components/core/GlassCard';
@@ -44,7 +44,7 @@ const HomeScreen: React.FC = () => {
       <LinearGradient colors={['#0A0A0F', '#0F0F1A']} className="absolute inset-0" />
 
       {/* Header */}
-      <View
+      {/* <View
         className="flex-row items-center justify-between border-b border-white/5 bg-ink px-6 pb-4"
         style={{
           paddingTop: insets.top + 12,
@@ -58,18 +58,18 @@ const HomeScreen: React.FC = () => {
           style={{ minWidth: 48, minHeight: 48 }}>
           <Text className="text-xl font-bold text-text-primary">⋯</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
-      <ScrollView
-        className="flex-1"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}>
+      <SafeAreaView className="flex-1">
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 100 }}>
+
         {/* Greeting */}
         <View className="px-6 pb-8 pt-6">
-          <Text className="mb-1 text-3xl font-bold text-text-primary">Good morning, Ana ✨</Text>
+          <Text className="mb-1 text-2xl font-bold text-text-primary">Good morning, Ana ✨</Text>
           <Text className="text-base text-text-secondary">Thursday, July 12 • 9:41 AM</Text>
         </View>
-
         {/* AI Insight Card */}
         <View className="mb-6 px-6">
           <GlassCard variant="primary" className="p-6">
@@ -84,7 +84,6 @@ const HomeScreen: React.FC = () => {
             </Text>
           </GlassCard>
         </View>
-
         {/* Quick Stats */}
         <View className="mb-6 flex-row gap-4 px-6">
           <View className="flex-1">
@@ -100,7 +99,6 @@ const HomeScreen: React.FC = () => {
             </GlassCard>
           </View>
         </View>
-
         {/* Quick Actions */}
         <View className="px-6">
           <Text className="mb-4 text-lg font-semibold text-text-primary">Quick Actions</Text>
@@ -132,9 +130,10 @@ const HomeScreen: React.FC = () => {
                 <Text className="text-base font-semibold text-text-primary">Message Check</Text>
               </GlassCard>
             </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
 
       {/* Emergency Float Button */}
       <TouchableOpacity

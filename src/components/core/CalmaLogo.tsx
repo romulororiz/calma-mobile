@@ -39,7 +39,7 @@ const CalmaLogo: React.FC<CalmaLogoProps> = ({
           Animated.sequence([
             Animated.timing(animatedValue, {
               toValue: 1,
-              duration: 3000,
+              duration: 4500,
               useNativeDriver: false,
             }),
             Animated.timing(animatedValue, {
@@ -52,11 +52,11 @@ const CalmaLogo: React.FC<CalmaLogoProps> = ({
       }, delay);
     };
 
-    // Start animations with tighter delays for closer ripples
+    // Start animations with proportionally adjusted delays for same spacing
     createRippleAnimation(ripple1, 0);
-    createRippleAnimation(ripple2, 750);
-    createRippleAnimation(ripple3, 1500);
-    createRippleAnimation(ripple4, 2250);
+    createRippleAnimation(ripple2, 1125);
+    createRippleAnimation(ripple3, 2250);
+    createRippleAnimation(ripple4, 3375);
   }, [animated, ripple1, ripple2, ripple3, ripple4]);
 
   const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -160,7 +160,7 @@ const CalmaLogo: React.FC<CalmaLogoProps> = ({
         <Text
           className={`${
             size === 'xl' ? 'text-3xl' : 'text-2xl'
-          } text-center text-text-secondary font-bold`}>
+          } text-center font-bold text-text-secondary`}>
           Calma
         </Text>
       )}

@@ -57,7 +57,6 @@ const ADHDTypeScreen: React.FC = () => {
 
   return (
     <View className="flex-1 bg-ink">
-
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 40 }}
@@ -82,7 +81,7 @@ const ADHDTypeScreen: React.FC = () => {
               <TouchableOpacity
                 key={type.id}
                 onPress={() => handleTypeSelect(type.id)}
-                className={`flex-row items-center gap-4 rounded-2xl border-2 p-4 ${
+                className={`mb-4 flex-row items-center gap-4 rounded-2xl border-2 p-4 ${
                   selectedType === type.id
                     ? 'border-aurora-start bg-surface-primary'
                     : 'border-transparent bg-surface-glass'
