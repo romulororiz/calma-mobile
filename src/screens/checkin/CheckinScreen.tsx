@@ -1,11 +1,46 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, ScrollView, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
-import NavHeader from '../../components/core/NavHeader';
-import GlassCard from '../../components/core/GlassCard';
-import Button from '../../components/core/Button';
+import {
+  NebulaGradient,
+  NebulaAnimated,
+  NebulaCard,
+  NebulaButton,
+  NebulaText,
+} from '../../components/core';
+
+const { width: screenWidth } = Dimensions.get('window');
+
+// Modern navigation configuration (smaller design)
+const navigationTabs = [
+  {
+    id: 'home',
+    icon: '🏠',
+    label: 'Home',
+    route: 'Home',
+  },
+  {
+    id: 'checkin',
+    icon: '💝',
+    label: 'Check-in',
+    route: 'Checkin',
+  },
+  {
+    id: 'insights',
+    icon: '📊',
+    label: 'Insights',
+    route: 'Insights',
+  },
+  {
+    id: 'emergency',
+    icon: '🆘',
+    label: 'Emergency',
+    route: 'Emergency',
+  },
+];
 
 interface Emotion {
   id: string;
@@ -37,10 +72,49 @@ const contexts: Context[] = [
   { id: 'caffeinated', emoji: '☕', label: 'Caffeinated' },
 ];
 
-const CheckinScreen: React.FC = () => {
+interface CheckinScreenProps {
+  hideNavigation?: boolean;
+  navigateToScreen?: (screenId: string) => void;
+}
+
+const CheckinScreen: React.FC<CheckinScreenProps> = ({
+  hideNavigation = false,
+  navigateToScreen,
+}) => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
+  const [activeTab, setActiveTab] = useState('checkin');
   const [selectedEmotion, setSelectedEmotion] = useState<string | null>(null);
   const [selectedContexts, setSelectedContexts] = useState<string[]>([]);
+
+  // Animation references for smaller navigation
+  const navAnim = useRef(new Animated.Value(0)).current;
+  const glowAnim = useRef(new Animated.Value(0)).current;
+
+  // Animate navigation on mount
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(navAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(glowAnim, {
+            toValue: 1,
+            duration: 2000,
+            useNativeDriver: false,
+          }),
+          Animated.timing(glowAnim, {
+            toValue: 0,
+            duration: 2000,
+            useNativeDriver: false,
+          }),
+        ])
+      ),
+    ]).start();
+  }, []);
 
   const handleEmotionSelect = (emotionId: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -60,83 +134,161 @@ const CheckinScreen: React.FC = () => {
     navigation.goBack();
   };
 
-  return (
-    <View className="flex-1 bg-ink">
-      <NavHeader title="Daily Check-in" />
+  const handleTabPress = (tab: (typeof navigationTabs)[0]) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setActiveTab(tab.id);
+    if (tab.id !== 'checkin') {
+      if (navigateToScreen) {
+        navigateToScreen(tab.id);
+      } else {
+        navigation.navigate(tab.route as never);
+      }
+    }
+  };
 
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 40 }}
-        showsVerticalScrollIndicator={false}>
-        <View className="items-center px-6 py-8">
-          <Text className="mb-8 text-center text-3xl font-bold text-text-primary">
-            How&apos;s your beautiful{'\n'}mind today?
-          </Text>
+  return (
+    <NebulaGradient variant="background" style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            paddingBottom: 100 + insets.bottom,
+            paddingHorizontal: 30,
+            paddingTop: 40,
+          }}
+          showsVerticalScrollIndicator={false}>
+          {/* Header Text */}
+          <NebulaAnimated animation="fadeIn" duration={800} delay={200} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={400} iterationCount={1}>
+              <NebulaText
+                size="2xl"
+                weight="bold"
+                variant="primary"
+                align="center"
+                style={{ marginBottom: 40, lineHeight: 36 }}>
+                How&apos;s your beautiful{'\n'}mind today?
+              </NebulaText>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
           {/* Emotion Grid */}
-          <View className="mb-10 w-full max-w-[300px]">
-            <View className="flex-row flex-wrap justify-center gap-6">
-              {emotions.map((emotion) => (
-                <TouchableOpacity
-                  key={emotion.id}
-                  onPress={() => handleEmotionSelect(emotion.id)}
-                  className={`h-20 w-20 items-center justify-center rounded-2xl border-2 ${
-                    selectedEmotion === emotion.id
-                      ? 'border-aurora-start bg-surface-primary'
-                      : 'border-transparent bg-surface-glass'
-                  }`}
-                  activeOpacity={0.7}>
-                  <Text className="text-4xl">{emotion.emoji}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
+          <NebulaAnimated animation="fadeIn" duration={800} delay={600} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={800} iterationCount={1}>
+              <View style={{ marginBottom: 40, alignItems: 'center' }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                    gap: 16,
+                    maxWidth: 300,
+                  }}>
+                  {emotions.map((emotion, index) => (
+                    <NebulaAnimated
+                      key={emotion.id}
+                      animation="fadeIn"
+                      duration={500}
+                      delay={1000 + index * 100}
+                      iterationCount={1}>
+                      <TouchableOpacity
+                        onPress={() => handleEmotionSelect(emotion.id)}
+                        activeOpacity={0.8}>
+                        <NebulaCard
+                          variant={selectedEmotion === emotion.id ? 'primary' : 'default'}
+                          style={{
+                            width: 72,
+                            height: 72,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderWidth: selectedEmotion === emotion.id ? 2 : 0,
+                            borderColor: selectedEmotion === emotion.id ? '#9F7AEA' : 'transparent',
+                          }}>
+                          <NebulaText size="xl">{emotion.emoji}</NebulaText>
+                        </NebulaCard>
+                      </TouchableOpacity>
+                    </NebulaAnimated>
+                  ))}
+                </View>
+              </View>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
           {/* Context Section */}
-          <View className="w-full">
-            <Text className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-text-tertiary">
-              ADD CONTEXT (OPTIONAL)
-            </Text>
+          <NebulaAnimated animation="fadeIn" duration={800} delay={1400} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={1600} iterationCount={1}>
+              <View style={{ marginBottom: 40 }}>
+                <NebulaText
+                  size="base"
+                  weight="medium"
+                  variant="secondary"
+                  align="center"
+                  style={{ marginBottom: 20 }}>
+                  Add some context
+                </NebulaText>
 
-            <View className="flex-row flex-wrap justify-center gap-2">
-              {contexts.map((context) => (
-                <TouchableOpacity
-                  key={context.id}
-                  onPress={() => handleContextToggle(context.id)}
-                  className={`rounded-full border px-4 py-2 ${
-                    selectedContexts.includes(context.id)
-                      ? 'border-transparent bg-aurora-start'
-                      : 'border-white/5 bg-surface-glass'
-                  }`}
-                  activeOpacity={0.7}>
-                  <View className="flex-row items-center gap-2">
-                    <Text className="text-sm">{context.emoji}</Text>
-                    <Text
-                      className={`text-sm ${
-                        selectedContexts.includes(context.id)
-                          ? 'font-semibold text-white'
-                          : 'text-text-primary'
-                      }`}>
-                      {context.label}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        </View>
-      </ScrollView>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                    gap: 12,
+                  }}>
+                  {contexts.map((context, index) => (
+                    <NebulaAnimated
+                      key={context.id}
+                      animation="fadeIn"
+                      duration={400}
+                      delay={1800 + index * 80}
+                      iterationCount={1}>
+                      <TouchableOpacity
+                        onPress={() => handleContextToggle(context.id)}
+                        activeOpacity={0.8}>
+                        <View
+                          style={{
+                            borderRadius: 20,
+                            paddingHorizontal: 14,
+                            paddingVertical: 8,
+                            backgroundColor: selectedContexts.includes(context.id)
+                              ? 'rgba(159, 122, 234, 0.2)'
+                              : 'rgba(255, 255, 255, 0.05)',
+                            borderWidth: 1,
+                            borderColor: selectedContexts.includes(context.id)
+                              ? 'rgba(159, 122, 234, 0.4)'
+                              : 'rgba(255, 255, 255, 0.1)',
+                          }}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                            <NebulaText size="sm">{context.emoji}</NebulaText>
+                            <NebulaText size="sm" weight="medium" variant="primary">
+                              {context.label}
+                            </NebulaText>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    </NebulaAnimated>
+                  ))}
+                </View>
+              </View>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
-      {/* Save Button */}
-      <View className="px-6 pb-8">
-        <Button
-          title="Save Check-in"
-          onPress={handleSaveCheckin}
-          variant="primary"
-          disabled={!selectedEmotion}
-        />
-      </View>
-    </View>
+          {/* Save Button */}
+          <NebulaAnimated animation="fadeIn" duration={800} delay={2200} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={2400} iterationCount={1}>
+              <View style={{ paddingTop: 20 }}>
+                <NebulaButton
+                  title="Save Check-in"
+                  onPress={handleSaveCheckin}
+                  variant="primary"
+                  size="md"
+                  disabled={!selectedEmotion}
+                  animated={false}
+                />
+              </View>
+            </NebulaAnimated>
+          </NebulaAnimated>
+        </ScrollView>
+      </SafeAreaView>
+    </NebulaGradient>
   );
 };
 

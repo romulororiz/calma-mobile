@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
-import Button from '../../components/core/Button';
+import { NebulaGradient, NebulaAnimated, NebulaButton, NebulaText } from '../../components/core';
 import CalmaLogo from '../../components/core/CalmaLogo';
 
 const WelcomeScreen: React.FC = () => {
@@ -12,7 +12,7 @@ const WelcomeScreen: React.FC = () => {
 
   const handleBegin = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    navigation.navigate('SetupIntro' as never);
+    navigation.navigate('SignUp' as never);
   };
 
   const handleSignIn = () => {
@@ -21,44 +21,69 @@ const WelcomeScreen: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 bg-ink">
-      {/* Background Gradient */}
-      <LinearGradient colors={['#0A0A0F', '#0F0F1A']} className="absolute inset-0" />
+    <NebulaGradient variant="background" style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1, paddingHorizontal: 30, paddingBottom: 40 }}>
+          {/* Logo and App Name */}
+          <NebulaAnimated animation="fadeIn" duration={1000} iterationCount={1}>
+            <View style={{ marginBottom: 60, alignItems: 'center', marginTop: 80 }}>
+              <View style={{ marginBottom: 30, alignItems: 'center', justifyContent: 'center' }}>
+                <CalmaLogo showText={true} size="xl" />
+              </View>
+            </View>
+          </NebulaAnimated>
 
-      <View className="flex-1 px-6 pb-10 pt-20">
-        {/* Logo and App Name */}
-        <View className="mb-16 items-center">
-          <View className="mb-6 h-24 w-24 items-center justify-center rounded-2xl">
-            <CalmaLogo showText={true} size="xl" />
+          {/* Middle Content */}
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: 20,
+            }}>
+            <NebulaAnimated animation="slideUp" duration={800} iterationCount={1}>
+              <NebulaText
+                size="lg"
+                variant="secondary"
+                align="center"
+                style={{ lineHeight: 28, marginBottom: 40, fontSize: 16 }}>
+                Built by ADHD minds for ADHD minds.{'\n'}No judgment, just understanding.
+              </NebulaText>
+            </NebulaAnimated>
           </View>
-        </View>
 
-        {/* Middle Content */}
-        <View className="flex-1 items-center justify-start px-8 pt-36">
-          <Text className="text-center text-lg leading-relaxed text-text-secondary">
-            Built by ADHD minds for ADHD minds. No judgment, just understanding.
-          </Text>
-        </View>
+          {/* Bottom Actions */}
+          <NebulaAnimated animation="slideUp" duration={600} iterationCount={1}>
+            <View>
+              <NebulaButton
+                title="Let's Begin"
+                onPress={handleBegin}
+                variant="primary"
+                size="md"
+                icon="→"
+                iconPosition="right"
+                animated={false}
+                style={{ marginBottom: 20 }}
+              />
 
-        {/* Bottom Actions */}
-        <View>
-          <Button
-            title="Let's Begin"
-            onPress={handleBegin}
-            variant="primary"
-            icon="→"
-            iconPosition="right"
-          />
-
-          <TouchableOpacity onPress={handleSignIn} className="mt-6">
-            <Text className="text-center text-sm text-text-tertiary">
-              Already have an account?{' '}
-              <Text className="font-semibold text-aurora-start">Sign in</Text>
-            </Text>
-          </TouchableOpacity>
+              <TouchableOpacity onPress={handleSignIn} style={{ paddingVertical: 15 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                  }}>
+                  <NebulaText size="sm" variant="tertiary">
+                    Already have an account?{' '}
+                  </NebulaText>
+                  <NebulaText size="sm" weight="medium" gradient="nebula">
+                    Sign in
+                  </NebulaText>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </NebulaAnimated>
         </View>
-      </View>
-    </View>
+      </SafeAreaView>
+    </NebulaGradient>
   );
 };
 

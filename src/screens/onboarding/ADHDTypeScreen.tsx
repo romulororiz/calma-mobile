@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
-import Button from '../../components/core/Button';
-import ProgressDots from '../../components/core/ProgressDots';
+import { NebulaAnimated, NebulaCard, NebulaButton, NebulaText } from '../../components/core';
+import OnboardingContainer from '../../components/onboarding/OnboardingContainer';
 
 interface ADHDType {
   id: string;
@@ -55,63 +55,102 @@ const ADHDTypeScreen: React.FC = () => {
     navigation.navigate('Main' as never);
   };
 
+  const handleStepNavigation = (step: number) => {
+    // Define the onboarding flow
+    const screens = ['SetupIntro', 'ADHDType', 'Checkin', 'Main'];
+
+    if (step >= 0 && step < screens.length) {
+      if (step === 0) {
+        navigation.navigate('SetupIntro' as never);
+      } else if (step === 1) {
+        // Stay on current screen
+        return;
+      } else {
+        navigation.navigate(screens[step] as never);
+      }
+    }
+  };
+
   return (
-    <View className="flex-1 bg-ink">
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 40 }}
-        showsVerticalScrollIndicator={false}>
-        <View className="px-6 pt-20">
-          {/* Progress Dots */}
-          <View className="mb-10">
-            <ProgressDots total={4} current={1} />
-          </View>
+    <OnboardingContainer currentStep={1} totalSteps={4} onStepChange={handleStepNavigation}>
+      {/* Header */}
+      <NebulaAnimated animation="slideUp" duration={700} delay={300} iterationCount={1}>
+        <NebulaText
+          size="xl"
+          weight="bold"
+          variant="primary"
+          align="center"
+          style={{ marginBottom: 8, marginTop: 20 }}>
+          How does your ADHD show up?
+        </NebulaText>
+        <NebulaText size="base" variant="secondary" align="center" style={{ marginBottom: 30 }}>
+          This helps me personalize your experience
+        </NebulaText>
+      </NebulaAnimated>
 
-          {/* Header */}
-          <Text className="mb-2 text-center text-2xl font-bold text-text-primary">
-            How does your ADHD show up?
-          </Text>
-          <Text className="mb-8 text-center text-base text-text-secondary">
-            This helps me personalize your experience
-          </Text>
-
-          {/* Type Options */}
-          <View className="space-y-4">
-            {adhdTypes.map((type) => (
-              <TouchableOpacity
-                key={type.id}
-                onPress={() => handleTypeSelect(type.id)}
-                className={`mb-4 flex-row items-center gap-4 rounded-2xl border-2 p-4 ${
-                  selectedType === type.id
-                    ? 'border-aurora-start bg-surface-primary'
-                    : 'border-transparent bg-surface-glass'
-                }`}
-                activeOpacity={0.7}>
-                <View className="h-12 w-12 items-center justify-center rounded-xl bg-surface-primary">
-                  <Text className="text-2xl">{type.icon}</Text>
+      {/* Type Options */}
+      <View style={{ flex: 1, gap: 12 }}>
+        {adhdTypes.map((type, index) => (
+          <NebulaAnimated
+            key={type.id}
+            animation="slideUp"
+            duration={500}
+            delay={500 + index * 100}
+            iterationCount={1}>
+            <TouchableOpacity onPress={() => handleTypeSelect(type.id)} activeOpacity={0.7}>
+              <NebulaCard
+                variant={selectedType === type.id ? 'primary' : 'default'}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  padding: 16,
+                  borderWidth: selectedType === type.id ? 2 : 0,
+                  borderColor: selectedType === type.id ? '#6A5ACD' : 'transparent',
+                }}>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 10,
+                    backgroundColor: 'rgba(106, 90, 205, 0.15)',
+                    marginRight: 12,
+                  }}>
+                  <NebulaText size="lg">{type.icon}</NebulaText>
                 </View>
-                <View className="flex-1">
-                  <Text className="mb-1 text-base font-semibold text-text-primary">
+                <View style={{ flex: 1 }}>
+                  <NebulaText
+                    size="base"
+                    weight="medium"
+                    variant="primary"
+                    style={{ marginBottom: 2 }}>
                     {type.label}
-                  </Text>
-                  <Text className="text-sm text-text-secondary">{type.description}</Text>
+                  </NebulaText>
+                  <NebulaText size="sm" variant="secondary">
+                    {type.description}
+                  </NebulaText>
                 </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </ScrollView>
+              </NebulaCard>
+            </TouchableOpacity>
+          </NebulaAnimated>
+        ))}
+      </View>
 
       {/* Continue Button */}
-      <View className="px-6 pb-10">
-        <Button
-          title="Continue"
-          onPress={handleContinue}
-          variant="primary"
-          disabled={!selectedType}
-        />
-      </View>
-    </View>
+      <NebulaAnimated animation="slideUp" duration={600} delay={900} iterationCount={1}>
+        <View style={{ paddingBottom: 30 }}>
+          <NebulaButton
+            title="Continue"
+            onPress={handleContinue}
+            variant="primary"
+            size="md"
+            disabled={!selectedType}
+            animated={false}
+          />
+        </View>
+      </NebulaAnimated>
+    </OnboardingContainer>
   );
 };
 

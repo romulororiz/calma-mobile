@@ -1,25 +1,130 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, ScrollView, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
-import GlassCard from '../../components/core/GlassCard';
+import {
+  NebulaGradient,
+  NebulaAnimated,
+  NebulaCard,
+  NebulaButton,
+  NebulaText,
+} from '../../components/core';
+
+const { width: screenWidth } = Dimensions.get('window');
+
+// Modern navigation configuration (smaller design)
+const navigationTabs = [
+  {
+    id: 'home',
+    icon: '🏠',
+    label: 'Home',
+    route: 'Home',
+  },
+  {
+    id: 'checkin',
+    icon: '💝',
+    label: 'Check-in',
+    route: 'Checkin',
+  },
+  {
+    id: 'insights',
+    icon: '📊',
+    label: 'Insights',
+    route: 'Insights',
+  },
+  {
+    id: 'emergency',
+    icon: '🆘',
+    label: 'Emergency',
+    route: 'Emergency',
+  },
+];
 
 interface EmergencyOption {
   id: string;
   icon: string;
   title: string;
   description: string;
+  color: string;
+  priority: 'high' | 'medium' | 'low';
   action: () => void;
 }
 
-const EmergencyScreen: React.FC = () => {
+interface EmergencyScreenProps {
+  hideNavigation?: boolean;
+  navigateToScreen?: (screenId: string) => void;
+}
+
+const EmergencyScreen: React.FC<EmergencyScreenProps> = ({
+  hideNavigation = false,
+  navigateToScreen,
+}) => {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const [activeTab, setActiveTab] = useState('emergency');
+
+  // Animation references for smaller navigation and emergency effects
+  const navAnim = useRef(new Animated.Value(0)).current;
+  const glowAnim = useRef(new Animated.Value(0)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  // Animate navigation and breathing effect on mount
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(navAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(glowAnim, {
+            toValue: 1,
+            duration: 2000,
+            useNativeDriver: false,
+          }),
+          Animated.timing(glowAnim, {
+            toValue: 0,
+            duration: 2000,
+            useNativeDriver: false,
+          }),
+        ])
+      ),
+      // Gentle breathing animation for calming effect
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.02,
+            duration: 4000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 4000,
+            useNativeDriver: true,
+          }),
+        ])
+      ),
+    ]).start();
+  }, []);
 
   const handleOption = (action: () => void) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     action();
+  };
+
+  const handleTabPress = (tab: (typeof navigationTabs)[0]) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setActiveTab(tab.id);
+    if (tab.id !== 'emergency') {
+      if (navigateToScreen) {
+        navigateToScreen(tab.id);
+      } else {
+        navigation.navigate(tab.route as never);
+      }
+    }
   };
 
   const emergencyOptions: EmergencyOption[] = [
@@ -28,8 +133,11 @@ const EmergencyScreen: React.FC = () => {
       icon: '🌊',
       title: 'Your Calm Sequence',
       description: 'Brown noise + Box breathing + Visuals',
+      color: '#10B981',
+      priority: 'high',
       action: () => {
         // Navigate to calm sequence
+        console.log('Calm sequence activated');
       },
     },
     {
@@ -37,8 +145,11 @@ const EmergencyScreen: React.FC = () => {
       icon: '🎯',
       title: 'Decision Helper',
       description: 'Break the paralysis step by step',
+      color: '#9F7AEA',
+      priority: 'high',
       action: () => {
         // Navigate to decision helper
+        console.log('Decision helper activated');
       },
     },
     {
@@ -46,8 +157,11 @@ const EmergencyScreen: React.FC = () => {
       icon: '💬',
       title: 'Text Your Person',
       description: 'Send: "Need support, I\'m safe"',
+      color: '#F59E0B',
+      priority: 'medium',
       action: () => {
         // Send pre-written text
+        console.log('Support text sent');
       },
     },
     {
@@ -55,67 +169,202 @@ const EmergencyScreen: React.FC = () => {
       icon: '📞',
       title: 'Crisis Hotline',
       description: 'Connect with trained support',
+      color: '#EC4899',
+      priority: 'medium',
       action: () => {
         // Call crisis hotline
+        console.log('Crisis hotline called');
       },
     },
   ];
 
+  const getCardStyle = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return {
+          backgroundColor: 'rgba(16, 185, 129, 0.08)',
+          borderColor: 'rgba(16, 185, 129, 0.2)',
+        };
+      case 'medium':
+        return {
+          backgroundColor: 'rgba(236, 72, 153, 0.08)',
+          borderColor: 'rgba(236, 72, 153, 0.2)',
+        };
+      default:
+        return {
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        };
+    }
+  };
+
   return (
-    <View className="flex-1 bg-ink">
-      {/* Emergency Background Gradient */}
-      <LinearGradient
-        colors={['rgba(236, 72, 153, 0.1)', '#0A0A0F']}
-        className="absolute inset-0"
-      />
+    <NebulaGradient variant="background" style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            paddingBottom: 100 + insets.bottom,
+            paddingHorizontal: 30,
+            paddingTop: 40,
+          }}
+          showsVerticalScrollIndicator={false}>
+          {/* Calming Header */}
+          <NebulaAnimated animation="fadeIn" duration={800} delay={200} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={400} iterationCount={1}>
+              <Animated.View
+                style={{
+                  marginBottom: 40,
+                  alignItems: 'center',
+                  transform: [{ scale: pulseAnim }],
+                }}>
+                <NebulaText
+                  size="2xl"
+                  weight="bold"
+                  variant="primary"
+                  align="center"
+                  style={{ marginBottom: 8 }}>
+                  I&apos;m here with you 🫂
+                </NebulaText>
+                <NebulaText size="base" variant="secondary" align="center">
+                  Let&apos;s get through this together
+                </NebulaText>
+              </Animated.View>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 40 }}
-        showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View className="items-center px-6 pb-8" style={{ paddingTop: insets.top + 20 }}>
-          <Text className="mb-2 text-3xl font-bold text-text-primary">I&apos;m here with you</Text>
-          <Text className="text-lg text-text-secondary">Let&apos;s get through this together</Text>
-        </View>
+          {/* Emergency Options */}
+          <NebulaAnimated animation="fadeIn" duration={800} delay={600} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={800} iterationCount={1}>
+              <View style={{ marginBottom: 40 }}>
+                {emergencyOptions.map((option, index) => (
+                  <NebulaAnimated
+                    key={option.id}
+                    animation="fadeIn"
+                    duration={500}
+                    delay={1000 + index * 150}
+                    iterationCount={1}>
+                    <TouchableOpacity
+                      onPress={() => handleOption(option.action)}
+                      activeOpacity={0.8}
+                      style={{ marginBottom: 16 }}>
+                      <NebulaCard
+                        variant="default"
+                        style={{
+                          padding: 20,
+                          borderWidth: 1,
+                          ...getCardStyle(option.priority),
+                        }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+                          <View
+                            style={{
+                              width: 56,
+                              height: 56,
+                              borderRadius: 16,
+                              backgroundColor: `${option.color}20`,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <NebulaText size="2xl">{option.icon}</NebulaText>
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <NebulaText
+                              size="lg"
+                              weight="bold"
+                              variant="primary"
+                              style={{ marginBottom: 4 }}>
+                              {option.title}
+                            </NebulaText>
+                            <NebulaText size="sm" variant="secondary">
+                              {option.description}
+                            </NebulaText>
+                          </View>
+                          <View
+                            style={{
+                              width: 24,
+                              height: 24,
+                              borderRadius: 12,
+                              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <NebulaText size="sm" variant="tertiary">
+                              →
+                            </NebulaText>
+                          </View>
+                        </View>
+                      </NebulaCard>
+                    </TouchableOpacity>
+                  </NebulaAnimated>
+                ))}
+              </View>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
-        {/* Emergency Options */}
-        <View className="px-6">
-          {emergencyOptions.map((option) => (
-            <TouchableOpacity
-              key={option.id}
-              onPress={() => handleOption(option.action)}
-              activeOpacity={0.8}>
-              <GlassCard
-                variant="emergency"
-                className="relative mb-4 flex-row items-center gap-4 overflow-hidden p-4">
-                {/* Animated scan line */}
-                {/* <View className="absolute left-0 right-0 top-0 h-0.5 bg-aurora-mid opacity-40" /> */}
-
-                <View className="h-14 w-14 items-center justify-center rounded-2xl bg-aurora-mid/20">
-                  <Text className="text-3xl">{option.icon}</Text>
+          {/* Reassurance Message */}
+          <NebulaAnimated animation="fadeIn" duration={800} delay={1800} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={2000} iterationCount={1}>
+              <NebulaCard
+                variant="primary"
+                style={{
+                  padding: 25,
+                  alignItems: 'center',
+                  marginBottom: 20,
+                }}>
+                <View
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 24,
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: 16,
+                  }}>
+                  <NebulaText size="xl">💚</NebulaText>
                 </View>
+                <NebulaText
+                  size="base"
+                  variant="primary"
+                  align="center"
+                  weight="medium"
+                  style={{ lineHeight: 24 }}>
+                  This feeling is temporary.{'\n'}
+                  You&apos;ve survived 100% of your hardest days.
+                </NebulaText>
+              </NebulaCard>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
-                <View className="flex-1">
-                  <Text className="mb-1 text-lg font-semibold text-text-primary">
-                    {option.title}
-                  </Text>
-                  <Text className="text-sm text-text-secondary">{option.description}</Text>
-                </View>
-              </GlassCard>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Reassurance Message */}
-        <View className="mt-8 px-6">
-          <Text className="text-center text-base leading-relaxed text-text-secondary">
-            This feeling is temporary.{'\n'}
-            You&apos;ve survived 100% of your hardest days.
-          </Text>
-        </View>
-      </ScrollView>
-    </View>
+          {/* Quick Breathing Reminder */}
+          <NebulaAnimated animation="fadeIn" duration={800} delay={2200} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={2400} iterationCount={1}>
+              <NebulaCard
+                variant="default"
+                style={{
+                  padding: 20,
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(159, 122, 234, 0.05)',
+                  borderColor: 'rgba(159, 122, 234, 0.2)',
+                  borderWidth: 1,
+                }}>
+                <NebulaText
+                  size="sm"
+                  weight="medium"
+                  variant="tertiary"
+                  align="center"
+                  style={{ marginBottom: 8 }}>
+                  Quick Breathing Exercise
+                </NebulaText>
+                <NebulaText size="sm" variant="secondary" align="center" style={{ lineHeight: 20 }}>
+                  Breathe in for 4... Hold for 4... Out for 4... Hold for 4
+                </NebulaText>
+              </NebulaCard>
+            </NebulaAnimated>
+          </NebulaAnimated>
+        </ScrollView>
+      </SafeAreaView>
+    </NebulaGradient>
   );
 };
 

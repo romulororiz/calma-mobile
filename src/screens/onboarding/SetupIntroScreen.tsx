@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
-import Button from '../../components/core/Button';
-import GlassCard from '../../components/core/GlassCard';
-import ProgressDots from '../../components/core/ProgressDots';
+import { NebulaAnimated, NebulaCard, NebulaButton, NebulaText } from '../../components/core';
+import OnboardingContainer from '../../components/onboarding/OnboardingContainer';
 
 const SetupIntroScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -20,49 +19,79 @@ const SetupIntroScreen: React.FC = () => {
     navigation.navigate('Main' as never);
   };
 
+  const handleStepNavigation = (step: number) => {
+    // Define the onboarding flow
+    const screens = ['SetupIntro', 'ADHDType', 'Checkin', 'Main'];
+
+    if (step >= 0 && step < screens.length) {
+      if (step <= 0) {
+        // Stay on current screen or go back to welcome
+        return;
+      } else {
+        navigation.navigate(screens[step] as never);
+      }
+    }
+  };
+
   return (
-    <View className="flex-1 bg-ink">
+    <OnboardingContainer currentStep={0} totalSteps={4} onStepChange={handleStepNavigation}>
+      {/* Welcome Card */}
+      <NebulaAnimated animation="fadeIn" duration={800} delay={300} iterationCount={1}>
+        <NebulaCard
+          variant="primary"
+          style={{ marginBottom: 40, alignItems: 'center', marginTop: 20 }}
+          padding={40}>
+          <NebulaAnimated animation="fadeIn" duration={600} delay={600} iterationCount={1}>
+            <NebulaText size="3xl" style={{ marginBottom: 25 }}>
+              👋
+            </NebulaText>
+          </NebulaAnimated>
+          <NebulaAnimated animation="slideUp" duration={600} delay={800} iterationCount={1}>
+            <NebulaText
+              size="2xl"
+              weight="bold"
+              variant="primary"
+              align="center"
+              style={{ marginBottom: 20 }}>
+              Hi, I&apos;m Calma
+            </NebulaText>
+          </NebulaAnimated>
+          <NebulaAnimated animation="fadeIn" duration={600} delay={1000} iterationCount={1}>
+            <NebulaText size="base" variant="secondary" align="center" style={{ lineHeight: 24 }}>
+              I&apos;m here to help you understand your beautiful ADHD mind. Let&apos;s set things
+              up in a way that works for YOU.
+            </NebulaText>
+          </NebulaAnimated>
+        </NebulaCard>
+      </NebulaAnimated>
 
-      <View className="flex-1 px-6 pb-10 pt-20">
-        {/* Progress Dots */}
-        <View className="mb-10">
-          <ProgressDots total={4} current={0} />
-        </View>
+      {/* Spacer */}
+      <View style={{ flex: 1 }} />
 
-        {/* Welcome Card */}
-        <GlassCard className="mb-8 items-center p-8">
-          <Text className="mb-6 text-6xl">👋</Text>
-          <Text className="mb-4 text-center text-2xl font-bold text-text-primary">
-            Hi, I&apos;m Calma
-          </Text>
-          <Text className="text-center text-base leading-relaxed text-text-secondary">
-            I&apos;m here to help you understand your beautiful ADHD mind. Let&apos;s set things up in a way
-            that works for YOU.
-          </Text>
-        </GlassCard>
-
-        {/* Spacer */}
-        <View className="flex-1" />
-
-        {/* Actions */}
+      {/* Actions */}
+      <NebulaAnimated animation="slideUp" duration={600} delay={1200} iterationCount={1}>
         <View>
-          <Button
+          <NebulaButton
             title="Next"
             onPress={handleNext}
             variant="primary"
+            size="md"
             icon="→"
             iconPosition="right"
+            animated={false}
+            style={{ marginBottom: 15 }}
           />
 
-          <Button
+          <NebulaButton
             title="Skip Setup (Use Defaults)"
             onPress={handleSkip}
             variant="secondary"
-            className="mt-3"
+            size="md"
+            animated={false}
           />
         </View>
-      </View>
-    </View>
+      </NebulaAnimated>
+    </OnboardingContainer>
   );
 };
 

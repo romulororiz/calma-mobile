@@ -4,54 +4,60 @@ module.exports = {
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
-      // Aurora Glass Design System Colors
+      // Nebula Calm Design System Colors
       colors: {
-        // Base Colors - Ink System
-        ink: {
-          DEFAULT: '#0A0A0F',
-          100: '#0A0A0F',
-          90: '#1A1A24',
-          80: '#2A2A38',
-          70: '#3A3A4C',
+        // Cosmic Background System
+        'deep-space': '#0A0A1F',
+        'void-black': '#000000',
+        'cosmic-mist': '#4B0082',
+
+        // Nebula Gradient System - Primary Palette
+        nebula: {
+          purple: '#6A5ACD', // Primary accent - softer slate blue
+          DEFAULT: '#6A5ACD',
+        },
+        cosmic: {
+          pink: '#DB7093', // Mid-tone - muted palevioletred
+          DEFAULT: '#DB7093',
+        },
+        starlight: {
+          gold: '#FFD700', // End accent - warm gold
+          DEFAULT: '#FFD700',
         },
 
-        // Aurora Gradient System
-        aurora: {
-          start: '#9F7AEA',
-          mid: '#EC4899',
-          end: '#F59E0B',
-        },
-
-        // Surface Colors with Alpha
+        // Enhanced Surface Colors with Higher Opacity
         surface: {
-          primary: '#9F7AEA0A',      // rgba(159, 122, 234, 0.04)
-          secondary: '#9F7AEA14',    // rgba(159, 122, 234, 0.08)
-          elevated: '#1A1A2499',     // rgba(26, 26, 36, 0.6)
-          glass: '#FFFFFF05',        // rgba(255, 255, 255, 0.02)
-          emergency: '#EC489914',    // rgba(236, 72, 153, 0.08)
+          glass: 'rgba(255, 255, 255, 0.05)', // Increased for better visibility
+          'glass-elevated': 'rgba(255, 255, 255, 0.08)',
+          primary: 'rgba(106, 90, 205, 0.08)', // Nebula purple transparency
+          secondary: 'rgba(106, 90, 205, 0.12)',
+          cosmic: 'rgba(219, 112, 147, 0.06)', // Cosmic pink surface
+          emergency: 'rgba(255, 69, 0, 0.08)', // Softer emergency red
+          success: 'rgba(50, 205, 50, 0.08)', // Success green surface
         },
 
-        // Text Hierarchy
+        // High-Contrast Text Hierarchy for ADHD
         text: {
-          primary: '#FFFFFF',
-          secondary: '#FFFFFFB3',    // rgba(255, 255, 255, 0.7)
-          tertiary: '#FFFFFF80',     // rgba(255, 255, 255, 0.5)
-          quaternary: '#FFFFFF4D',   // rgba(255, 255, 255, 0.3)
+          primary: '#FFFFFF', // Pure white for maximum contrast
+          secondary: '#D3D3D3', // Light gray - 80% opacity equivalent
+          tertiary: '#A9A9A9', // Medium gray - 60% opacity equivalent
+          quaternary: '#808080', // Darker gray - 40% opacity equivalent
+          muted: '#696969', // Subtle text for less important info
         },
 
-        // Semantic Colors
+        // Softer Semantic Colors for Calm
         semantic: {
-          success: '#10B981',
-          warning: '#F59E0B',
-          error: '#EF4444',
-          info: '#3B82F6',
+          success: '#32CD32', // Lime green - warmer than previous
+          warning: '#FFD700', // Gold - matches starlight theme
+          error: '#FF4500', // Orange-red - less harsh than pure red
+          info: '#4169E1', // Royal blue - confident but calm
         },
 
-        // Energy Levels
+        // Positive Energy Level Colors
         energy: {
-          high: '#34D399',
-          medium: '#FBBF24',
-          low: '#F87171',
+          high: '#90EE90', // Light green - encouraging
+          medium: '#FFD700', // Gold - balanced
+          low: '#FF7F50', // Coral - warm, not alarming
         },
 
         // Additional helpful colors
@@ -60,124 +66,130 @@ module.exports = {
         transparent: 'transparent',
       },
 
-      // Spacing System (8px base unit)
+      // Enhanced Spacing System (10px base unit for more whitespace)
       spacing: {
-        unit: '8px',
-        xs: '4px',    // 0.5 * unit
-        sm: '8px',    // 1 * unit  
-        md: '16px',   // 2 * unit
-        lg: '24px',   // 3 * unit
-        xl: '40px',   // 5 * unit
-        '2xl': '64px', // 8 * unit
-        
-        // Override defaults for consistency
+        unit: '10px',
+        xs: '5px', // 0.5 * unit
+        sm: '10px', // 1 * unit
+        md: '20px', // 2 * unit
+        lg: '30px', // 3 * unit
+        xl: '50px', // 5 * unit
+        '2xl': '80px', // 8 * unit
+        '3xl': '120px', // 12 * unit for hero sections
+
+        // Override defaults for enhanced spacing (10px increments)
         0: '0px',
-        1: '4px',
-        2: '8px',
-        3: '12px',
-        4: '16px',
-        5: '20px',
-        6: '24px',
-        7: '28px',
-        8: '32px',
-        9: '36px',
-        10: '40px',
-        11: '44px',
-        12: '48px',
-        14: '56px',
-        16: '64px',
-        20: '80px',
-        24: '96px',
-        28: '112px',
-        32: '128px',
-        36: '144px',
-        40: '160px',
-        44: '176px',
-        48: '192px',
-        52: '208px',
-        56: '224px',
-        60: '240px',
-        64: '256px',
-        72: '288px',
-        80: '320px',
-        96: '384px',
+        1: '5px',
+        2: '10px',
+        3: '15px',
+        4: '20px',
+        5: '25px',
+        6: '30px',
+        7: '35px',
+        8: '40px',
+        9: '45px',
+        10: '50px',
+        11: '55px',
+        12: '60px',
+        14: '70px',
+        16: '80px',
+        20: '100px',
+        24: '120px',
+        28: '140px',
+        32: '160px',
+        36: '180px',
+        40: '200px',
+        44: '220px',
+        48: '240px',
+        52: '260px',
+        56: '280px',
+        60: '300px',
+        64: '320px',
+        72: '360px',
+        80: '400px',
+        96: '480px',
       },
 
-      // Typography System
+      // Poppins Typography System
       fontFamily: {
-        nunito: ['Nunito', 'system-ui', 'sans-serif'],
+        poppins: ['Poppins', 'system-ui', 'sans-serif'],
         system: ['system-ui', 'sans-serif'],
-        sans: ['Nunito', 'system-ui', 'sans-serif'],
+        sans: ['Poppins', 'system-ui', 'sans-serif'],
       },
 
-      // Font Sizes (using 1.25 scale)
+      // Enhanced Font Sizes (Poppins optimized scale)
       fontSize: {
-        xs: ['12.8px', { lineHeight: '1.4' }],
-        sm: ['14.2px', { lineHeight: '1.5' }],
-        md: ['16px', { lineHeight: '1.5' }],
-        base: ['16px', { lineHeight: '1.5' }],
-        lg: ['20px', { lineHeight: '1.4' }],
-        xl: ['25px', { lineHeight: '1.3' }],
-        '2xl': ['31.25px', { lineHeight: '1.2' }],
-        '3xl': ['39px', { lineHeight: '1.1' }],
-        '4xl': ['49px', { lineHeight: '1.1' }],
+        xs: ['12px', { lineHeight: '1.5' }], // Labels
+        sm: ['14px', { lineHeight: '1.6' }], // Body text
+        base: ['16px', { lineHeight: '1.6' }], // Default
+        md: ['16px', { lineHeight: '1.6' }], // Alias for base
+        lg: ['20px', { lineHeight: '1.5' }], // Headings
+        xl: ['24px', { lineHeight: '1.4' }], // Titles
+        '2xl': ['32px', { lineHeight: '1.3' }], // Hero text
+        '3xl': ['40px', { lineHeight: '1.2' }], // Display text
+        '4xl': ['48px', { lineHeight: '1.1' }], // Large display
       },
 
-      // Font Weight System
+      // Poppins Font Weight System
       fontWeight: {
-        normal: '400',
-        semibold: '600',
-        bold: '700',
+        light: '300', // Airy, spacious feel
+        normal: '400', // Standard body
+        regular: '400', // Alias for normal
+        medium: '500', // Emphasis
+        semibold: '600', // Strong emphasis (legacy support)
+        bold: '700', // Strong emphasis
       },
 
-      // Letter Spacing
+      // Enhanced Letter Spacing for Breathing Room
       letterSpacing: {
-        tighter: '-0.05em',
-        tight: '-0.02em',
+        tighter: '-0.02em',
+        tight: '-0.01em',
         normal: '0',
-        wide: '0.025em',
-        wider: '0.05em',
+        wide: '0.025em', // Slight breathing room
+        wider: '0.05em', // More spacious
         widest: '0.1em',
       },
 
-      // Line Heights
+      // Enhanced Line Heights for Readability
       lineHeight: {
         none: '1',
-        tight: '1.2',
-        snug: '1.375',
-        normal: '1.5',
-        relaxed: '1.6',
-        loose: '1.75',
+        tight: '1.3', // Compact
+        snug: '1.4',
+        normal: '1.5', // Standard
+        relaxed: '1.6', // Comfortable reading
+        loose: '1.8', // Maximum comfort
       },
 
-      // Border Radius System
+      // Organic Border Radius for Embracing Feel
       borderRadius: {
         none: '0',
-        sm: '12px',
-        md: '20px',
-        lg: '28px',
-        xl: '40px',
-        '2xl': '60px',
-        '3xl': '80px',
-        full: '9999px',
+        xs: '8px',
+        sm: '16px',
+        md: '24px', // Increased for softer feel
+        lg: '32px', // Organic, embracing
+        xl: '40px', // Large elements
+        '2xl': '48px',
+        '3xl': '64px',
+        full: '9999px', // Pills and circles
       },
 
-      // Animation Durations
+      // Gentle Animation Durations
       transitionDuration: {
-        fast: '200ms',
-        normal: '300ms',
-        slow: '500ms',
-        breathe: '4000ms',
+        fast: '300ms', // Quick interactions
+        normal: '400ms', // Standard transitions
+        slow: '600ms', // Gentle, calming
+        breathe: '5000ms', // Nebula breathe effect
       },
 
-      // Animation Timing Functions
+      // Natural Animation Timing Functions
       transitionTimingFunction: {
-        'ease-default': 'cubic-bezier(0.4, 0, 0.2, 1)',
-        'ease-bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-        'ease-smooth': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+        natural: 'cubic-bezier(0.22, 1, 0.36, 1)', // Smooth, natural
+        gentle: 'cubic-bezier(0.25, 0.1, 0.25, 1)', // Gentle acceleration
+        bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)', // Playful bounce
+        'ease-default': 'cubic-bezier(0.4, 0, 0.2, 1)', // Legacy support
       },
 
-      // Box Shadow System
+      // Enhanced Box Shadow System with Nebula Glows
       boxShadow: {
         sm: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
         DEFAULT: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
@@ -187,19 +199,27 @@ module.exports = {
         '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
         none: 'none',
-        glow: '0 0 80px rgba(159, 122, 234, 0.15)',
-        'aurora-glow': '0 10px 30px rgba(159, 122, 234, 0.3)',
-        'emergency-glow': '0 10px 30px rgba(236, 72, 153, 0.4)',
+        // Nebula-themed glows
+        'nebula-glow': '0 0 20px rgba(106, 90, 205, 0.1)',
+        'cosmic-glow': '0 0 30px rgba(219, 112, 147, 0.15)',
+        'starlight-glow': '0 0 25px rgba(255, 215, 0, 0.1)',
+        'soft-glow': '0 4px 20px rgba(0, 0, 0, 0.1)',
+        'medium-glow': '0 8px 30px rgba(0, 0, 0, 0.15)',
+        'strong-glow': '0 15px 40px rgba(0, 0, 0, 0.2)',
+        // Legacy support
+        glow: '0 0 80px rgba(106, 90, 205, 0.15)',
+        'aurora-glow': '0 10px 30px rgba(106, 90, 205, 0.3)',
+        'emergency-glow': '0 10px 30px rgba(255, 69, 0, 0.4)',
       },
 
-      // Backdrop Blur
+      // Enhanced Backdrop Blur for Glass Effects
       backdropBlur: {
-        xs: '2px',
-        sm: '4px',
-        md: '12px',
-        lg: '16px',
-        xl: '24px',
-        '2xl': '40px',
+        xs: '4px',
+        sm: '8px',
+        md: '16px', // Standard glass effect
+        lg: '24px', // Strong glass effect
+        xl: '32px', // Intense glass effect
+        '2xl': '48px',
         '3xl': '64px',
       },
 
@@ -212,32 +232,37 @@ module.exports = {
         'surface-end': 'rgba(159, 122, 234, 0.08)',
       },
 
-      // Keyframes for animations
+      // Enhanced Keyframes for Nebula Animations
       keyframes: {
-        breathe: {
-          '0%, 100%': { 
-            transform: 'scale(0.95)', 
-            opacity: '0.7' 
+        'nebula-breathe': {
+          '0%, 100%': {
+            transform: 'scale(0.98)',
+            opacity: '0.8',
           },
-          '50%': { 
-            transform: 'scale(1.05)', 
-            opacity: '1' 
+          '50%': {
+            transform: 'scale(1.02)',
+            opacity: '1',
           },
         },
-        float: {
+        'cosmic-float': {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        'pulse-emergency': {
-          '0%, 100%': { boxShadow: '0 10px 30px rgba(236, 72, 153, 0.4)' },
-          '50%': { boxShadow: '0 10px 40px rgba(236, 72, 153, 0.6)' },
+          '50%': { transform: 'translateY(-8px)' },
         },
         'gentle-pulse': {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(159, 122, 234, 0.4)' },
-          '50%': { boxShadow: '0 0 0 8px rgba(159, 122, 234, 0)' },
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(106, 90, 205, 0.4)' },
+          '50%': { boxShadow: '0 0 0 12px rgba(106, 90, 205, 0)' },
         },
-        rotate: {
-          to: { transform: 'rotate(360deg)' },
+        'emergency-pulse': {
+          '0%, 100%': { boxShadow: '0 10px 30px rgba(255, 69, 0, 0.4)' },
+          '50%': { boxShadow: '0 10px 40px rgba(255, 69, 0, 0.6)' },
+        },
+        'cosmic-drift': {
+          '0%': { transform: 'translateX(0px)' },
+          '100%': { transform: 'translateX(-200px)' },
+        },
+        'starlight-shimmer': {
+          '0%, 100%': { opacity: '0.3' },
+          '50%': { opacity: '0.8' },
         },
         'fade-in-up': {
           '0%': {
@@ -249,16 +274,40 @@ module.exports = {
             transform: 'translateY(0)',
           },
         },
+        // Legacy support
+        breathe: {
+          '0%, 100%': {
+            transform: 'scale(0.98)',
+            opacity: '0.8',
+          },
+          '50%': {
+            transform: 'scale(1.02)',
+            opacity: '1',
+          },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+        'pulse-emergency': {
+          '0%, 100%': { boxShadow: '0 10px 30px rgba(255, 69, 0, 0.4)' },
+          '50%': { boxShadow: '0 10px 40px rgba(255, 69, 0, 0.6)' },
+        },
       },
 
-      // Animation classes
+      // Enhanced Animation Classes
       animation: {
-        breathe: 'breathe 4s ease-in-out infinite',
-        float: 'float 3s ease-in-out infinite',
-        'pulse-emergency': 'pulse-emergency 3s ease-in-out infinite',
-        'gentle-pulse': 'gentle-pulse 2s ease-in-out infinite',
-        rotate: 'rotate 60s linear infinite',
+        'nebula-breathe': 'nebula-breathe 5s ease-in-out infinite',
+        'cosmic-float': 'cosmic-float 4s ease-in-out infinite',
+        'gentle-pulse': 'gentle-pulse 3s ease-in-out infinite',
+        'emergency-pulse': 'emergency-pulse 3s ease-in-out infinite',
+        'cosmic-drift': 'cosmic-drift 120s linear infinite',
+        'starlight-shimmer': 'starlight-shimmer 2s ease-in-out infinite',
         'fade-in-up': 'fade-in-up 0.5s ease-out',
+        // Legacy support
+        breathe: 'nebula-breathe 5s ease-in-out infinite',
+        float: 'cosmic-float 4s ease-in-out infinite',
+        'pulse-emergency': 'emergency-pulse 3s ease-in-out infinite',
       },
 
       // Screen sizes for responsive design
@@ -286,25 +335,25 @@ module.exports = {
         emergency: '400',
       },
 
-      // Touch target sizes for ADHD-friendly interactions
+      // ADHD-Friendly Touch Target Sizes (Enhanced)
       minHeight: {
-        touch: '44px',
-        'touch-comfortable': '48px',
-        'touch-large': '56px',
+        touch: '60px', // Minimum touch target (increased)
+        'touch-comfortable': '72px', // Comfortable size
+        'touch-large': '88px', // Large, easy to hit
       },
 
       minWidth: {
-        touch: '44px',
-        'touch-comfortable': '48px',
-        'touch-large': '56px',
+        touch: '60px', // Minimum touch target (increased)
+        'touch-comfortable': '72px', // Comfortable size
+        'touch-large': '88px', // Large, easy to hit
       },
 
-      // Aspect ratios
+      // Aspect Ratios (React Native Compatible)
       aspectRatio: {
         auto: 'auto',
-        square: '1 / 1',
-        video: '16 / 9',
-        phone: '9 / 16',
+        square: '1',
+        video: '1.777',
+        phone: '0.5625',
       },
     },
   },

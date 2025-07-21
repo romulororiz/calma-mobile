@@ -1,23 +1,20 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  CardStyleInterpolators,
+  TransitionSpecs,
+} from '@react-navigation/stack';
 import { RootStackParamList } from './types';
 import { COLORS } from '../constants/theme';
-
-// Import navigators
-import BottomTabNavigator from './BottomTabNavigator';
 
 // Import screens
 import WelcomeScreen from '../screens/onboarding/WelcomeScreen';
 import LoginScreen from '../screens/onboarding/LoginScreen';
-import SetupIntroScreen from '../screens/onboarding/SetupIntroScreen';
-import ADHDTypeScreen from '../screens/onboarding/ADHDTypeScreen';
-import EmergencyScreen from '../screens/emergency/EmergencyScreen';
-import ChaosToClarityScreen from '../screens/ai/ChaosToClarityScreen';
-import MessageCheckScreen from '../screens/ai/MessageCheckScreen';
-import LifeStoryScreen from '../screens/ai/LifeStoryScreen';
+import OnboardingFlowScreen from '../screens/onboarding/OnboardingFlowScreen';
+import MainContainer from '../components/navigation/MainContainer';
 import ParentBridgeScreen from '../screens/support/ParentBridgeScreen';
-import SettingsScreen from '../screens/settings/SettingsScreen';
+import SignUpScreen from '../screens/onboarding/SignUpScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -61,27 +58,61 @@ const RootNavigator: React.FC = () => {
           cardStyle: {
             backgroundColor: COLORS.ink[100],
           },
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+          transitionSpec: {
+            open: {
+              animation: 'timing',
+              config: {
+                duration: 400,
+              },
+            },
+            close: {
+              animation: 'timing',
+              config: {
+                duration: 400,
+              },
+            },
+          },
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}>
         {/* Onboarding */}
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="SetupIntro" component={SetupIntroScreen} />
-        <Stack.Screen name="ADHDType" component={ADHDTypeScreen} />
+        <Stack.Screen
+          name="Welcome"
+          component={WelcomeScreen}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid,
+          }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUpScreen}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}
+        />
+        <Stack.Screen
+          name="SetupIntro"
+          component={OnboardingFlowScreen}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}
+        />
 
-        {/* Main App */}
-        <Stack.Screen name="Main" component={BottomTabNavigator} />
-
-        {/* AI Features */}
-        <Stack.Screen name="ChaosToClarity" component={ChaosToClarityScreen} />
-        <Stack.Screen name="MessageCheck" component={MessageCheckScreen} />
-        <Stack.Screen name="LifeStory" component={LifeStoryScreen} />
+        {/* Main App - All screens handled within MainContainer */}
+        <Stack.Screen name="Main" component={MainContainer} />
 
         {/* Support */}
-        <Stack.Screen name="Emergency" component={EmergencyScreen} />
         <Stack.Screen name="ParentBridge" component={ParentBridgeScreen} />
 
-        {/* Settings */}
-        <Stack.Screen name="Settings" component={SettingsScreen} />
+        {/* Settings - handled by MainContainer */}
       </Stack.Navigator>
     </NavigationContainer>
   );

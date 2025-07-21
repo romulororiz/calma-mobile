@@ -1,90 +1,576 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, ScrollView, TouchableOpacity, Animated, Dimensions, TextInput } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
-import NavHeader from '../../components/core/NavHeader';
-import GlassCard from '../../components/core/GlassCard';
-import Button from '../../components/core/Button';
+import {
+  NebulaGradient,
+  NebulaAnimated,
+  NebulaCard,
+  NebulaButton,
+  NebulaText,
+} from '../../components/core';
 
-const MessageCheckScreen: React.FC = () => {
-  const handleCopyResponse = () => {
+const { width: screenWidth } = Dimensions.get('window');
+
+// Modern navigation configuration (smaller design)
+const navigationTabs = [
+  {
+    id: 'home',
+    icon: '🏠',
+    label: 'Home',
+    route: 'Home',
+  },
+  {
+    id: 'checkin',
+    icon: '💝',
+    label: 'Check-in',
+    route: 'Checkin',
+  },
+  {
+    id: 'insights',
+    icon: '📊',
+    label: 'Insights',
+    route: 'Insights',
+  },
+  {
+    id: 'messages',
+    icon: '💌',
+    label: 'Messages',
+    route: 'MessageCheck',
+  },
+  {
+    id: 'emergency',
+    icon: '🆘',
+    label: 'Emergency',
+    route: 'Emergency',
+  },
+];
+
+interface ToneAnalysis {
+  emotion: string;
+  icon: string;
+  color: string;
+  confidence: number;
+  description: string;
+}
+
+interface RealityCheck {
+  id: string;
+  text: string;
+  status: 'positive' | 'neutral' | 'warning';
+  icon: string;
+}
+
+interface MessageCheckScreenProps {
+  hideNavigation?: boolean;
+  navigateToScreen?: (screenId: string) => void;
+}
+
+const MessageCheckScreen: React.FC<MessageCheckScreenProps> = ({
+  hideNavigation = false,
+  navigateToScreen,
+}) => {
+  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
+  const [activeTab, setActiveTab] = useState('messages');
+  const [inputMessage, setInputMessage] = useState(
+    'Hey, we need to talk about the project. Can you meet tomorrow at 3?'
+  );
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Animation references for professional analysis effects
+  const navAnim = useRef(new Animated.Value(0)).current;
+  const glowAnim = useRef(new Animated.Value(0)).current;
+  const analysisPulse = useRef(new Animated.Value(1)).current;
+  const progressAnim = useRef(new Animated.Value(0)).current;
+
+  // Animate navigation and analysis effects on mount
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(navAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(glowAnim, {
+            toValue: 1,
+            duration: 2000,
+            useNativeDriver: false,
+          }),
+          Animated.timing(glowAnim, {
+            toValue: 0,
+            duration: 2000,
+            useNativeDriver: false,
+          }),
+        ])
+      ),
+      // Gentle analysis pulse for engagement
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(analysisPulse, {
+            toValue: 1.02,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(analysisPulse, {
+            toValue: 1,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+        ])
+      ),
+    ]).start();
+  }, []);
+
+  const handleTabPress = (tab: (typeof navigationTabs)[0]) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    // Copy to clipboard
+    setActiveTab(tab.id);
+    if (tab.id !== 'messages') {
+      if (navigateToScreen) {
+        navigateToScreen(tab.id);
+      } else {
+        navigation.navigate(tab.route as never);
+      }
+    }
+  };
+
+  const handleAnalyze = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setIsAnalyzing(true);
+
+    // Simulate analysis process with progress bar
+    Animated.timing(progressAnim, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: false,
+    }).start(() => {
+      setIsAnalyzing(false);
+      progressAnim.setValue(0);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    });
+  };
+
+  const handleCopyResponse = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Copy to clipboard logic
+  };
+
+  const toneAnalysis: ToneAnalysis = {
+    emotion: 'Neutral Professional',
+    icon: '😊',
+    color: '#10B981',
+    confidence: 92,
+    description: 'No anger or urgency detected',
+  };
+
+  const realityChecks: RealityCheck[] = [
+    {
+      id: '1',
+      text: 'No ALL CAPS or exclamation marks',
+      status: 'positive',
+      icon: '✓',
+    },
+    {
+      id: '2',
+      text: 'They asked for your availability',
+      status: 'positive',
+      icon: '✓',
+    },
+    {
+      id: '3',
+      text: 'Similar to their usual tone',
+      status: 'positive',
+      icon: '✓',
+    },
+    {
+      id: '4',
+      text: 'Professional language used',
+      status: 'positive',
+      icon: '✓',
+    },
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'positive':
+        return '#10B981';
+      case 'warning':
+        return '#F59E0B';
+      default:
+        return '#6B7280';
+    }
   };
 
   return (
-    <View className="flex-1 bg-ink">
-      <NavHeader title="Message Check" showMenu={true} />
+    <NebulaGradient variant="background" style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            paddingBottom: 100 + insets.bottom,
+            paddingHorizontal: 30,
+            paddingTop: 40,
+          }}
+          showsVerticalScrollIndicator={false}>
+          {/* Header */}
+          <NebulaAnimated animation="fadeIn" duration={800} delay={200} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={400} iterationCount={1}>
+              <View style={{ marginBottom: 40, alignItems: 'center' }}>
+                <NebulaText
+                  size="2xl"
+                  weight="bold"
+                  variant="primary"
+                  align="center"
+                  style={{ marginBottom: 8 }}>
+                  Message Check
+                </NebulaText>
+                <NebulaText size="base" variant="secondary" align="center">
+                  Analyze tone objectively, respond with confidence
+                </NebulaText>
+              </View>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 40 }}
-        showsVerticalScrollIndicator={false}>
-        <View className="px-6 py-6">
-          {/* Original Message */}
-          <GlassCard className="mb-6 p-4">
-            <Text className="mb-3 text-sm font-semibold uppercase tracking-wider text-text-tertiary">
-              ORIGINAL MESSAGE
-            </Text>
-            <Text className="text-base italic leading-relaxed text-text-primary">
-              &quot;Hey, we need to talk about the project. Can you meet tomorrow at 3?&quot;
-            </Text>
-          </GlassCard>
+          {/* Message Input */}
+          <NebulaAnimated animation="fadeIn" duration={800} delay={600} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={800} iterationCount={1}>
+              <NebulaCard
+                variant="default"
+                style={{
+                  padding: 20,
+                  marginBottom: 20,
+                  backgroundColor: 'rgba(159, 122, 234, 0.05)',
+                  borderColor: 'rgba(159, 122, 234, 0.2)',
+                  borderWidth: 1,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 12,
+                  }}>
+                  <View
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 14,
+                      backgroundColor: 'rgba(159, 122, 234, 0.2)',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: 10,
+                    }}>
+                    <NebulaText size="sm">📝</NebulaText>
+                  </View>
+                  <NebulaText
+                    size="sm"
+                    weight="bold"
+                    variant="tertiary"
+                    style={{ textTransform: 'uppercase', letterSpacing: 1.2 }}>
+                    Message to Analyze
+                  </NebulaText>
+                </View>
+                <TextInput
+                  value={inputMessage}
+                  onChangeText={setInputMessage}
+                  placeholder="Paste your message here..."
+                  placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                  multiline
+                  style={{
+                    minHeight: 80,
+                    fontSize: 16,
+                    // SLATE COLOR
+                    color: '#c2c2c2ec',
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    padding: 16,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    textAlignVertical: 'top',
+                  }}
+                />
+              </NebulaCard>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
-          {/* Tone Analysis */}
-          <View className="mb-8 flex-row items-center gap-6">
-            <View className="from-success h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br to-energy-high">
-              <Text className="text-4xl">😊</Text>
+          {/* Analyze Button */}
+          <NebulaAnimated animation="fadeIn" duration={600} delay={1000} iterationCount={1}>
+            <View style={{ marginBottom: 30, alignItems: 'center' }}>
+              <TouchableOpacity
+                onPress={handleAnalyze}
+                disabled={isAnalyzing}
+                style={{ marginBottom: 12 }}>
+                <NebulaCard
+                  variant="primary"
+                  style={{
+                    paddingVertical: 16,
+                    paddingHorizontal: 32,
+                    backgroundColor: isAnalyzing
+                      ? 'rgba(159, 122, 234, 0.3)'
+                      : 'rgba(159, 122, 234, 0.15)',
+                    borderColor: 'rgba(159, 122, 234, 0.4)',
+                    borderWidth: 1,
+                  }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <NebulaText size="lg" style={{ marginRight: 8 }}>
+                      {isAnalyzing ? '🔍' : '🧠'}
+                    </NebulaText>
+                    <NebulaText size="base" weight="medium" variant="primary">
+                      {isAnalyzing ? 'Analyzing...' : 'Analyze Tone'}
+                    </NebulaText>
+                  </View>
+                </NebulaCard>
+              </TouchableOpacity>
+
+              {/* Progress Bar */}
+              {isAnalyzing && (
+                <View
+                  style={{
+                    width: 200,
+                    height: 3,
+                    backgroundColor: 'rgba(159, 122, 234, 0.2)',
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                  }}>
+                  <Animated.View
+                    style={{
+                      height: '100%',
+                      backgroundColor: '#9F7AEA',
+                      width: progressAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0%', '100%'],
+                      }),
+                    }}
+                  />
+                </View>
+              )}
             </View>
-            <View className="flex-1">
-              <Text className="mb-1 text-xl font-bold text-text-primary">
-                Tone: Neutral Professional
-              </Text>
-              <Text className="text-base text-text-secondary">No anger or urgency detected</Text>
-            </View>
-          </View>
+          </NebulaAnimated>
+
+          {/* Tone Analysis Result */}
+          <NebulaAnimated animation="fadeIn" duration={800} delay={1200} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={1400} iterationCount={1}>
+              <Animated.View
+                style={{
+                  marginBottom: 30,
+                  transform: [{ scale: analysisPulse }],
+                }}>
+                <NebulaCard
+                  variant="default"
+                  style={{
+                    padding: 20,
+                    backgroundColor: `${toneAnalysis.color}08`,
+                    borderColor: `${toneAnalysis.color}30`,
+                    borderWidth: 1,
+                  }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: 40,
+                        backgroundColor: `${toneAnalysis.color}20`,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginRight: 20,
+                        borderWidth: 2,
+                        borderColor: `${toneAnalysis.color}40`,
+                      }}>
+                      <NebulaText size="3xl">{toneAnalysis.icon}</NebulaText>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <NebulaText
+                        size="xl"
+                        weight="bold"
+                        variant="primary"
+                        style={{ marginBottom: 4 }}>
+                        {toneAnalysis.emotion}
+                      </NebulaText>
+                      <NebulaText size="sm" variant="secondary" style={{ marginBottom: 8 }}>
+                        {toneAnalysis.description}
+                      </NebulaText>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                          paddingHorizontal: 8,
+                          paddingVertical: 4,
+                          borderRadius: 12,
+                          alignSelf: 'flex-start',
+                        }}>
+                        <NebulaText size="xs" weight="medium" style={{ color: toneAnalysis.color }}>
+                          {toneAnalysis.confidence}% confidence
+                        </NebulaText>
+                      </View>
+                    </View>
+                  </View>
+                </NebulaCard>
+              </Animated.View>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
           {/* Reality Checks */}
-          <View className="mb-8">
-            <Text className="mb-4 text-sm font-semibold uppercase tracking-wider text-text-tertiary">
-              REALITY CHECKS
-            </Text>
+          <NebulaAnimated animation="fadeIn" duration={800} delay={1600} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={1800} iterationCount={1}>
+              <View style={{ marginBottom: 30 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 16,
+                  }}>
+                  <View
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 14,
+                      backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: 10,
+                    }}>
+                    <NebulaText size="sm">🔍</NebulaText>
+                  </View>
+                  <NebulaText
+                    size="sm"
+                    weight="bold"
+                    variant="tertiary"
+                    style={{ textTransform: 'uppercase', letterSpacing: 1.2 }}>
+                    Reality Checks
+                  </NebulaText>
+                </View>
 
-            <View className="space-y-2">
-              <View className="bg-success/5 flex-row items-center gap-3 rounded-xl p-3">
-                <Text className="text-success">✓</Text>
-                <Text className="text-sm text-text-primary">No ALL CAPS or exclamation marks</Text>
+                <View style={{ gap: 12 }}>
+                  {realityChecks.map((check, index) => (
+                    <NebulaAnimated
+                      key={check.id}
+                      animation="fadeIn"
+                      duration={400}
+                      delay={2000 + index * 150}
+                      iterationCount={1}>
+                      <NebulaCard
+                        variant="default"
+                        style={{
+                          padding: 16,
+                          backgroundColor: `${getStatusColor(check.status)}08`,
+                          borderColor: `${getStatusColor(check.status)}20`,
+                          borderWidth: 1,
+                        }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <View
+                            style={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: 16,
+                              backgroundColor: `${getStatusColor(check.status)}20`,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              marginRight: 12,
+                            }}>
+                            <NebulaText size="base" style={{ color: getStatusColor(check.status) }}>
+                              {check.icon}
+                            </NebulaText>
+                          </View>
+                          <NebulaText size="sm" variant="primary" style={{ flex: 1 }}>
+                            {check.text}
+                          </NebulaText>
+                        </View>
+                      </NebulaCard>
+                    </NebulaAnimated>
+                  ))}
+                </View>
               </View>
-
-              <View className="bg-success/5 flex-row items-center gap-3 rounded-xl p-3">
-                <Text className="text-success">✓</Text>
-                <Text className="text-sm text-text-primary">They asked for your availability</Text>
-              </View>
-
-              <View className="bg-success/5 flex-row items-center gap-3 rounded-xl p-3">
-                <Text className="text-success">✓</Text>
-                <Text className="text-sm text-text-primary">Similar to their usual tone</Text>
-              </View>
-            </View>
-          </View>
+            </NebulaAnimated>
+          </NebulaAnimated>
 
           {/* Suggested Response */}
-          <View>
-            <Text className="mb-3 text-sm font-semibold uppercase tracking-wider text-text-tertiary">
-              SUGGESTED RESPONSE
-            </Text>
+          <NebulaAnimated animation="fadeIn" duration={800} delay={2600} iterationCount={1}>
+            <NebulaAnimated animation="slideUp" duration={600} delay={2800} iterationCount={1}>
+              <NebulaCard
+                variant="default"
+                style={{
+                  padding: 20,
+                  marginBottom: 20,
+                  backgroundColor: 'rgba(245, 158, 11, 0.05)',
+                  borderColor: 'rgba(245, 158, 11, 0.2)',
+                  borderWidth: 1,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 16,
+                  }}>
+                  <View
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 14,
+                      backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: 10,
+                    }}>
+                    <NebulaText size="sm">💡</NebulaText>
+                  </View>
+                  <NebulaText
+                    size="sm"
+                    weight="bold"
+                    variant="tertiary"
+                    style={{ textTransform: 'uppercase', letterSpacing: 1.2 }}>
+                    Suggested Response
+                  </NebulaText>
+                </View>
 
-            <GlassCard className="mb-4 p-4">
-              <Text className="text-base leading-relaxed text-text-primary">
-                &quot;Sure! 3 PM works for me. Looking forward to discussing the project updates.&quot;
-              </Text>
-            </GlassCard>
+                <View
+                  style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    padding: 16,
+                    borderRadius: 12,
+                    marginBottom: 16,
+                    borderWidth: 1,
+                    borderColor: 'rgba(245, 158, 11, 0.2)',
+                  }}>
+                  <NebulaText
+                    size="base"
+                    variant="primary"
+                    style={{ lineHeight: 22, fontStyle: 'italic' }}>
+                    &quot;Sure! 3 PM works for me. Looking forward to discussing the project
+                    updates.&quot;
+                  </NebulaText>
+                </View>
 
-            <Button title="Copy Response" onPress={handleCopyResponse} variant="primary" />
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+                <TouchableOpacity onPress={handleCopyResponse}>
+                  <NebulaCard
+                    variant="primary"
+                    style={{
+                      paddingVertical: 14,
+                      paddingHorizontal: 24,
+                      backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                      borderColor: 'rgba(245, 158, 11, 0.4)',
+                      borderWidth: 1,
+                      alignItems: 'center',
+                    }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <NebulaText size="base" style={{ marginRight: 8 }}>
+                        📋
+                      </NebulaText>
+                      <NebulaText size="base" weight="medium" variant="primary">
+                        Copy Response
+                      </NebulaText>
+                    </View>
+                  </NebulaCard>
+                </TouchableOpacity>
+              </NebulaCard>
+            </NebulaAnimated>
+          </NebulaAnimated>
+        </ScrollView>
+      </SafeAreaView>
+    </NebulaGradient>
   );
 };
 

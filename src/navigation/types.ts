@@ -2,24 +2,18 @@ export type RootStackParamList = {
   // Onboarding
   Welcome: undefined;
   Login: undefined;
+  SignUp: undefined;
   SetupIntro: undefined;
   ADHDType: undefined;
 
-  // Main App
+  // Main App Container (all screens handled internally)
   Main: undefined;
 
-  // AI Features
-  ChaosToClarity: undefined;
-  MessageCheck: undefined;
-  LifeStory: undefined;
-
-  // Support
-  Emergency: undefined;
+  // Support (standalone)
   ParentBridge: undefined;
   Breathing: undefined;
 
   // Settings
-  Settings: undefined;
   Premium: undefined;
 };
 
@@ -81,4 +75,4 @@ export type EmergencyAction = {
   title: string;
   description: string;
   action: () => void;
-};
+}; 

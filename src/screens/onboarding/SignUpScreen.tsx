@@ -14,25 +14,30 @@ import {
 import NavHeader from '../../components/core/NavHeader';
 import CalmaLogo from '../../components/core/CalmaLogo';
 
-const LoginScreen: React.FC = () => {
+const SignUpScreen: React.FC = () => {
   const navigation = useNavigation();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleLogin = () => {
+  const isFormValid = name && email && password && confirmPassword && password === confirmPassword;
+
+  const handleSignUp = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    // Handle login logic
-    navigation.navigate('Main' as never);
+    // Handle sign up logic
+    navigation.navigate('SetupIntro' as never);
   };
 
-  const handleSocialLogin = (provider: 'apple' | 'google') => {
+  const handleSocialSignUp = (provider: 'apple' | 'google') => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // Handle social login
+    // Handle social sign up
+    navigation.navigate('SetupIntro' as never);
   };
 
-  const handleForgotPassword = () => {
+  const handleSignIn = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // Navigate to forgot password
+    navigation.navigate('Login' as never);
   };
 
   return (
@@ -49,17 +54,39 @@ const LoginScreen: React.FC = () => {
                   <CalmaLogo size="md" />
                 </View>
                 <NebulaText size="2xl" weight="bold" variant="primary" align="center">
-                  Welcome Back
+                  Create Account
                 </NebulaText>
                 <NebulaText size="base" variant="secondary" align="center" style={{ marginTop: 8 }}>
-                  Sign in to continue your journey
+                  Start your journey to ADHD clarity
                 </NebulaText>
               </View>
             </NebulaAnimated>
 
-            {/* Email Form First */}
+            {/* Registration Form First */}
             <NebulaAnimated animation="slideUp" duration={600} iterationCount={1}>
               <View style={{ marginBottom: 30 }}>
+                {/* Name Input */}
+                <View style={{ marginBottom: 20 }}>
+                  <TextInput
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="Full name"
+                    placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                    autoCapitalize="words"
+                    style={{
+                      borderRadius: 12,
+                      borderWidth: 1,
+                      borderColor: 'rgba(255, 255, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      paddingHorizontal: 18,
+                      paddingVertical: 14,
+                      fontSize: 16,
+                      color: '#FFFFFF',
+                      fontFamily: 'Poppins_400Regular',
+                    }}
+                  />
+                </View>
+
                 {/* Email Input */}
                 <View style={{ marginBottom: 20 }}>
                   <TextInput
@@ -84,7 +111,7 @@ const LoginScreen: React.FC = () => {
                 </View>
 
                 {/* Password Input */}
-                <View style={{ marginBottom: 15 }}>
+                <View style={{ marginBottom: 20 }}>
                   <TextInput
                     value={password}
                     onChangeText={setPassword}
@@ -105,20 +132,42 @@ const LoginScreen: React.FC = () => {
                   />
                 </View>
 
-                {/* Forgot Password */}
-                <TouchableOpacity onPress={handleForgotPassword} style={{ marginBottom: 25 }}>
-                  <NebulaText size="sm" variant="primary" align="right">
-                    Forgot password?
-                  </NebulaText>
-                </TouchableOpacity>
+                {/* Confirm Password Input */}
+                <View style={{ marginBottom: 25 }}>
+                  <TextInput
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    placeholder="Confirm password"
+                    placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                    secureTextEntry
+                    style={{
+                      borderRadius: 12,
+                      borderWidth: 1,
+                      borderColor: password && confirmPassword && password !== confirmPassword 
+                        ? 'rgba(255, 100, 100, 0.3)' 
+                        : 'rgba(255, 255, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      paddingHorizontal: 18,
+                      paddingVertical: 14,
+                      fontSize: 16,
+                      color: '#FFFFFF',
+                      fontFamily: 'Poppins_400Regular',
+                    }}
+                  />
+                  {password && confirmPassword && password !== confirmPassword && (
+                    <NebulaText size="xs" variant="tertiary" style={{ marginTop: 5, marginLeft: 5 }}>
+                      Passwords don&apos;t match
+                    </NebulaText>
+                  )}
+                </View>
 
-                {/* Sign In Button */}
+                {/* Sign Up Button */}
                 <NebulaButton
-                  title="Sign In"
-                  onPress={handleLogin}
+                  title="Create Account"
+                  onPress={handleSignUp}
                   variant="primary"
                   size="md"
-                  disabled={!email || !password}
+                  disabled={!isFormValid}
                   animated={false}
                 />
               </View>
@@ -152,13 +201,13 @@ const LoginScreen: React.FC = () => {
               </View>
             </NebulaAnimated>
 
-            {/* Social Login Buttons Side by Side */}
+            {/* Social Sign Up Buttons Side by Side */}
             <NebulaAnimated animation="slideUp" duration={600} delay={200} iterationCount={1}>
               <View style={{ flexDirection: 'row', gap: 15 }}>
                 <View style={{ flex: 1 }}>
                   <NebulaButton
                     title="Apple"
-                    onPress={() => handleSocialLogin('apple')}
+                    onPress={() => handleSocialSignUp('apple')}
                     variant="secondary"
                     size="md"
                     icon="🍎"
@@ -170,7 +219,7 @@ const LoginScreen: React.FC = () => {
                 <View style={{ flex: 1 }}>
                   <NebulaButton
                     title="Google"
-                    onPress={() => handleSocialLogin('google')}
+                    onPress={() => handleSocialSignUp('google')}
                     variant="secondary"
                     size="md"
                     icon="🔍"
@@ -181,10 +230,10 @@ const LoginScreen: React.FC = () => {
               </View>
             </NebulaAnimated>
 
-            {/* Bottom Sign Up */}
+            {/* Bottom Sign In */}
             <NebulaAnimated animation="fadeIn" duration={600} delay={400} iterationCount={1}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('SignUp' as never)}
+                onPress={handleSignIn}
                 style={{
                   marginTop: 30,
                   paddingVertical: 15,
@@ -194,10 +243,10 @@ const LoginScreen: React.FC = () => {
                     flexDirection: 'row',
                   }}>
                   <NebulaText size="sm" variant="tertiary">
-                    Don&apos;t have an account?{' '}
+                    Already have an account?{' '}
                   </NebulaText>
                   <NebulaText size="sm" weight="medium" gradient="nebula">
-                    Sign up
+                    Sign in
                   </NebulaText>
                 </View>
               </TouchableOpacity>
@@ -209,5 +258,4 @@ const LoginScreen: React.FC = () => {
   );
 };
 
-export default LoginScreen;
- 
+export default SignUpScreen; 
