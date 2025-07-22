@@ -459,7 +459,7 @@ const OnboardingFlowScreen: React.FC = () => {
                       style={{ marginBottom: 12, fontSize: 16 }}>
                       📱 Notification Style
                     </NebulaText>
-                    <View style={{ gap: 8 }}>
+                    <View style={{ gap: 12 }}>
                       {[
                         { id: 'gentle', text: 'Gentle reminders', emoji: '🌸' },
                         { id: 'energetic', text: 'Energetic nudges', emoji: '⚡' },
@@ -484,27 +484,42 @@ const OnboardingFlowScreen: React.FC = () => {
                                   notificationStyle: option.id,
                                 });
                               }}
-                              style={{
-                                backgroundColor:
+                              activeOpacity={0.7}>
+                              <NebulaCard
+                                variant={
                                   selectedPreferences.notificationStyle === option.id
-                                    ? 'rgba(159, 122, 234, 0.2)'
-                                    : 'rgba(255, 255, 255, 0.05)',
-                                borderColor:
-                                  selectedPreferences.notificationStyle === option.id
-                                    ? 'rgba(159, 122, 234, 0.4)'
-                                    : 'rgba(255, 255, 255, 0.1)',
-                                borderWidth: 1,
-                                borderRadius: 12,
-                                padding: 16,
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
-                              <NebulaText size="lg" style={{ marginRight: 12 }}>
-                                {option.emoji}
-                              </NebulaText>
-                              <NebulaText size="sm" variant="primary">
-                                {option.text}
-                              </NebulaText>
+                                    ? 'primary'
+                                    : 'default'
+                                }
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  padding: 16,
+                                  borderWidth:
+                                    selectedPreferences.notificationStyle === option.id ? 2 : 0,
+                                  borderColor:
+                                    selectedPreferences.notificationStyle === option.id
+                                      ? '#6A5ACD'
+                                      : 'transparent',
+                                }}>
+                                <View
+                                  style={{
+                                    width: 40,
+                                    height: 40,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 10,
+                                    backgroundColor: 'rgba(106, 90, 205, 0.15)',
+                                    marginRight: 12,
+                                  }}>
+                                  <NebulaText size="lg">{option.emoji}</NebulaText>
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                  <NebulaText size="base" weight="medium" variant="primary">
+                                    {option.text}
+                                  </NebulaText>
+                                </View>
+                              </NebulaCard>
                             </TouchableOpacity>
                           </NebulaAnimated>
                         </NebulaAnimated>
@@ -525,7 +540,7 @@ const OnboardingFlowScreen: React.FC = () => {
                       style={{ marginBottom: 12, fontSize: 16 }}>
                       ⚡ Energy Patterns
                     </NebulaText>
-                    <View style={{ gap: 8 }}>
+                    <View style={{ gap: 12 }}>
                       {[
                         { id: 'morning', text: 'Morning person', emoji: '🌅' },
                         { id: 'night', text: 'Night owl', emoji: '🌙' },
@@ -550,27 +565,42 @@ const OnboardingFlowScreen: React.FC = () => {
                                   energyPattern: option.id,
                                 });
                               }}
-                              style={{
-                                backgroundColor:
+                              activeOpacity={0.7}>
+                              <NebulaCard
+                                variant={
                                   selectedPreferences.energyPattern === option.id
-                                    ? 'rgba(236, 72, 153, 0.2)'
-                                    : 'rgba(255, 255, 255, 0.05)',
-                                borderColor:
-                                  selectedPreferences.energyPattern === option.id
-                                    ? 'rgba(236, 72, 153, 0.4)'
-                                    : 'rgba(255, 255, 255, 0.1)',
-                                borderWidth: 1,
-                                borderRadius: 12,
-                                padding: 16,
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
-                              <NebulaText size="lg" style={{ marginRight: 12 }}>
-                                {option.emoji}
-                              </NebulaText>
-                              <NebulaText size="sm" variant="primary">
-                                {option.text}
-                              </NebulaText>
+                                    ? 'primary'
+                                    : 'default'
+                                }
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  padding: 16,
+                                  borderWidth:
+                                    selectedPreferences.energyPattern === option.id ? 2 : 0,
+                                  borderColor:
+                                    selectedPreferences.energyPattern === option.id
+                                      ? '#6A5ACD'
+                                      : 'transparent',
+                                }}>
+                                <View
+                                  style={{
+                                    width: 40,
+                                    height: 40,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 10,
+                                    backgroundColor: 'rgba(106, 90, 205, 0.15)',
+                                    marginRight: 12,
+                                  }}>
+                                  <NebulaText size="lg">{option.emoji}</NebulaText>
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                  <NebulaText size="base" weight="medium" variant="primary">
+                                    {option.text}
+                                  </NebulaText>
+                                </View>
+                              </NebulaCard>
                             </TouchableOpacity>
                           </NebulaAnimated>
                         </NebulaAnimated>
@@ -591,7 +621,7 @@ const OnboardingFlowScreen: React.FC = () => {
                       style={{ marginBottom: 12, fontSize: 16 }}>
                       🎯 Focus Preference
                     </NebulaText>
-                    <View style={{ gap: 8 }}>
+                    <View style={{ gap: 12 }}>
                       {[
                         { id: 'single', text: 'One thing at a time', emoji: '🎯' },
                         { id: 'multiple', text: 'Multiple projects', emoji: '🎭' },
@@ -616,27 +646,42 @@ const OnboardingFlowScreen: React.FC = () => {
                                   focusPreference: option.id,
                                 });
                               }}
-                              style={{
-                                backgroundColor:
+                              activeOpacity={0.7}>
+                              <NebulaCard
+                                variant={
                                   selectedPreferences.focusPreference === option.id
-                                    ? 'rgba(245, 158, 11, 0.2)'
-                                    : 'rgba(255, 255, 255, 0.05)',
-                                borderColor:
-                                  selectedPreferences.focusPreference === option.id
-                                    ? 'rgba(245, 158, 11, 0.4)'
-                                    : 'rgba(255, 255, 255, 0.1)',
-                                borderWidth: 1,
-                                borderRadius: 12,
-                                padding: 16,
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
-                              <NebulaText size="lg" style={{ marginRight: 12 }}>
-                                {option.emoji}
-                              </NebulaText>
-                              <NebulaText size="sm" variant="primary">
-                                {option.text}
-                              </NebulaText>
+                                    ? 'primary'
+                                    : 'default'
+                                }
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  padding: 16,
+                                  borderWidth:
+                                    selectedPreferences.focusPreference === option.id ? 2 : 0,
+                                  borderColor:
+                                    selectedPreferences.focusPreference === option.id
+                                      ? '#6A5ACD'
+                                      : 'transparent',
+                                }}>
+                                <View
+                                  style={{
+                                    width: 40,
+                                    height: 40,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 10,
+                                    backgroundColor: 'rgba(106, 90, 205, 0.15)',
+                                    marginRight: 12,
+                                  }}>
+                                  <NebulaText size="lg">{option.emoji}</NebulaText>
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                  <NebulaText size="base" weight="medium" variant="primary">
+                                    {option.text}
+                                  </NebulaText>
+                                </View>
+                              </NebulaCard>
                             </TouchableOpacity>
                           </NebulaAnimated>
                         </NebulaAnimated>
@@ -725,12 +770,12 @@ const OnboardingFlowScreen: React.FC = () => {
             <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
               <View style={{ gap: 12 }}>
                 {[
-                  { id: 'water', text: 'Drink water', emoji: '💧', color: '#06B6D4' },
-                  { id: 'walk', text: '5-minute walk', emoji: '🚶‍♀️', color: '#10B981' },
-                  { id: 'text', text: 'Text a friend', emoji: '💬', color: '#EC4899' },
-                  { id: 'organize', text: 'Organize desk corner', emoji: '🗂️', color: '#F59E0B' },
-                  { id: 'breathe', text: 'Take 3 deep breaths', emoji: '🧘‍♂️', color: '#9F7AEA' },
-                  { id: 'stretch', text: 'Quick stretch', emoji: '🤸‍♀️', color: '#EF4444' },
+                  { id: 'water', text: 'Drink water', emoji: '💧' },
+                  { id: 'walk', text: '5-minute walk', emoji: '🚶‍♀️' },
+                  { id: 'text', text: 'Text a friend', emoji: '💬' },
+                  { id: 'organize', text: 'Organize desk corner', emoji: '🗂️' },
+                  { id: 'breathe', text: 'Take 3 deep breaths', emoji: '🧘‍♂️' },
+                  { id: 'stretch', text: 'Quick stretch', emoji: '🤸‍♀️' },
                 ].map((goal, index) => (
                   <NebulaAnimated
                     key={goal.id}
@@ -750,57 +795,34 @@ const OnboardingFlowScreen: React.FC = () => {
                           setShowCelebration(true);
                           setTimeout(() => setShowCelebration(false), 2000);
                         }}
-                        style={{
-                          backgroundColor:
-                            selectedGoal?.id === goal.id
-                              ? `${goal.color}20`
-                              : 'rgba(255, 255, 255, 0.05)',
-                          borderColor:
-                            selectedGoal?.id === goal.id
-                              ? `${goal.color}40`
-                              : 'rgba(255, 255, 255, 0.1)',
-                          borderWidth: 1,
-                          borderRadius: 16,
-                          padding: 20,
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                        activeOpacity={0.7}>
+                        <NebulaCard
+                          variant={selectedGoal?.id === goal.id ? 'primary' : 'default'}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            padding: 16,
+                            borderWidth: selectedGoal?.id === goal.id ? 2 : 0,
+                            borderColor: selectedGoal?.id === goal.id ? '#6A5ACD' : 'transparent',
+                          }}>
                           <View
                             style={{
-                              width: 48,
-                              height: 48,
-                              borderRadius: 24,
-                              backgroundColor: `${goal.color}20`,
+                              width: 40,
+                              height: 40,
                               alignItems: 'center',
                               justifyContent: 'center',
-                              marginRight: 16,
+                              borderRadius: 10,
+                              backgroundColor: 'rgba(106, 90, 205, 0.15)',
+                              marginRight: 12,
                             }}>
-                            <NebulaText size="xl">{goal.emoji}</NebulaText>
+                            <NebulaText size="lg">{goal.emoji}</NebulaText>
                           </View>
-                          <NebulaText
-                            size="base"
-                            variant="primary"
-                            weight={selectedGoal?.id === goal.id ? 'medium' : 'regular'}>
-                            {goal.text}
-                          </NebulaText>
-                        </View>
-                        {selectedGoal?.id === goal.id && (
-                          <View
-                            style={{
-                              width: 24,
-                              height: 24,
-                              borderRadius: 12,
-                              backgroundColor: goal.color,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}>
-                            <NebulaText size="sm" style={{ color: 'white' }}>
-                              ✓
+                          <View style={{ flex: 1 }}>
+                            <NebulaText size="base" weight="medium" variant="primary">
+                              {goal.text}
                             </NebulaText>
                           </View>
-                        )}
+                        </NebulaCard>
                       </TouchableOpacity>
                     </NebulaAnimated>
                   </NebulaAnimated>
@@ -817,49 +839,61 @@ const OnboardingFlowScreen: React.FC = () => {
                       <NebulaCard
                         variant="default"
                         style={{
-                          padding: 20,
-                          backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                          borderColor: 'rgba(255, 255, 255, 0.1)',
-                          borderWidth: 1,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          padding: 16,
                         }}>
-                        <NebulaText
-                          size="sm"
-                          weight="medium"
-                          variant="primary"
-                          style={{ marginBottom: 12 }}>
-                          ✨ Or create your own small win:
-                        </NebulaText>
-                        <TextInput
-                          value={customGoal}
-                          onChangeText={setCustomGoal}
-                          placeholder="Type your goal here..."
-                          placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                        <View
                           style={{
-                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                            borderRadius: 12,
-                            padding: 16,
-                            color: '#FFFFFF',
-                            fontSize: 16,
-                            borderWidth: 1,
-                            borderColor: customGoal
-                              ? 'rgba(159, 122, 234, 0.3)'
-                              : 'rgba(255, 255, 255, 0.1)',
-                          }}
-                          onSubmitEditing={() => {
-                            if (customGoal.trim()) {
-                              const customGoalObj = {
-                                id: 'custom',
-                                text: customGoal.trim(),
-                                emoji: '⭐',
-                                color: '#9F7AEA',
-                              };
-                              setSelectedGoal(customGoalObj);
-                              setShowCelebration(true);
-                              setTimeout(() => setShowCelebration(false), 2000);
-                              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                            }
-                          }}
-                        />
+                            width: 40,
+                            height: 40,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 10,
+                            backgroundColor: 'rgba(106, 90, 205, 0.15)',
+                            marginRight: 12,
+                          }}>
+                          <NebulaText size="lg">✨</NebulaText>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <NebulaText
+                            size="sm"
+                            weight="medium"
+                            variant="primary"
+                            style={{ marginBottom: 8 }}>
+                            Or create your own small win:
+                          </NebulaText>
+                          <TextInput
+                            value={customGoal}
+                            onChangeText={setCustomGoal}
+                            placeholder="Type your goal here..."
+                            placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                            style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              borderRadius: 8,
+                              padding: 12,
+                              color: '#FFFFFF',
+                              fontSize: 14,
+                              borderWidth: 1,
+                              borderColor: customGoal
+                                ? 'rgba(106, 90, 205, 0.3)'
+                                : 'rgba(255, 255, 255, 0.1)',
+                            }}
+                            onSubmitEditing={() => {
+                              if (customGoal.trim()) {
+                                const customGoalObj = {
+                                  id: 'custom',
+                                  text: customGoal.trim(),
+                                  emoji: '⭐',
+                                };
+                                setSelectedGoal(customGoalObj);
+                                setShowCelebration(true);
+                                setTimeout(() => setShowCelebration(false), 2000);
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                              }
+                            }}
+                          />
+                        </View>
                       </NebulaCard>
                     </View>
                   </NebulaAnimated>
