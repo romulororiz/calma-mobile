@@ -59,6 +59,7 @@ const OnboardingFlowScreen: React.FC = () => {
   const [selectedGoal, setSelectedGoal] = useState<any>(null);
   const [customGoal, setCustomGoal] = useState('');
   const [showCelebration, setShowCelebration] = useState(false);
+  const celebrationAnim = useRef(new Animated.Value(0)).current;
 
   const slideAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -164,6 +165,29 @@ const OnboardingFlowScreen: React.FC = () => {
       delay: 200 + cardsAnim.length * 150 + 200, // After all cards + 200ms
       useNativeDriver: true,
     }).start();
+  };
+
+  const showCelebrationAnimation = () => {
+    setShowCelebration(true);
+    celebrationAnim.setValue(0);
+
+    // Fade in
+    Animated.timing(celebrationAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+
+    // Auto fade out after 1.5 seconds
+    setTimeout(() => {
+      Animated.timing(celebrationAnim, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start(() => {
+        setShowCelebration(false);
+      });
+    }, 1500);
   };
 
   const handleNext = () => {
@@ -792,8 +816,7 @@ const OnboardingFlowScreen: React.FC = () => {
                         onPress={() => {
                           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                           setSelectedGoal(goal);
-                          setShowCelebration(true);
-                          setTimeout(() => setShowCelebration(false), 2000);
+                          showCelebrationAnimation();
                         }}
                         activeOpacity={0.7}>
                         <NebulaCard
@@ -887,8 +910,7 @@ const OnboardingFlowScreen: React.FC = () => {
                                   emoji: '⭐',
                                 };
                                 setSelectedGoal(customGoalObj);
-                                setShowCelebration(true);
-                                setTimeout(() => setShowCelebration(false), 2000);
+                                showCelebrationAnimation();
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                               }
                             }}
@@ -911,30 +933,37 @@ const OnboardingFlowScreen: React.FC = () => {
                   right: 0,
                   alignItems: 'center',
                   zIndex: 10,
+                  opacity: celebrationAnim,
+                  transform: [
+                    {
+                      scale: celebrationAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.8, 1],
+                      }),
+                    },
+                  ],
                 }}>
-                <NebulaAnimated animation="fadeIn" duration={600} iterationCount={1}>
-                  <View
-                    style={{
-                      backgroundColor: 'rgba(16, 185, 129, 0.95)',
-                      borderRadius: 20,
-                      padding: 20,
-                      alignItems: 'center',
-                      minWidth: 200,
-                    }}>
-                    <NebulaText size="2xl" style={{ marginBottom: 8 }}>
-                      🎉
-                    </NebulaText>
-                    <NebulaText size="lg" weight="bold" style={{ color: 'white', marginBottom: 4 }}>
-                      Amazing!
-                    </NebulaText>
-                    <NebulaText
-                      size="sm"
-                      style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                      align="center">
-                      You&apos;ve got this! 💪
-                    </NebulaText>
-                  </View>
-                </NebulaAnimated>
+                <View
+                  style={{
+                    backgroundColor: 'rgba(16, 185, 129, 0.95)',
+                    borderRadius: 20,
+                    padding: 20,
+                    alignItems: 'center',
+                    minWidth: 200,
+                  }}>
+                  <NebulaText size="2xl" style={{ marginBottom: 8 }}>
+                    🎉
+                  </NebulaText>
+                  <NebulaText size="lg" weight="bold" style={{ color: 'white', marginBottom: 4 }}>
+                    Amazing!
+                  </NebulaText>
+                  <NebulaText
+                    size="sm"
+                    style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                    align="center">
+                    You&apos;ve got this! 💪
+                  </NebulaText>
+                </View>
               </Animated.View>
             )}
 
