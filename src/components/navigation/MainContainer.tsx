@@ -60,7 +60,6 @@ const screenComponents = {
   messages: MessageCheckScreen,
   lifestory: LifeStoryScreen,
   parentbridge: ParentBridgeScreen,
-  
 };
 
 interface MainContainerProps {
@@ -166,7 +165,7 @@ const MainContainer: React.FC<MainContainerProps> = ({ initialScreen = 'home' })
             flex: 1,
             opacity: contentOpacity,
           }}>
-          <ActiveComponent navigateToScreen={navigateToScreen} />
+          <ActiveComponent />
         </Animated.View>
 
         {/* Fixed Bottom Navigation */}

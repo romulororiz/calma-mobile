@@ -4,6 +4,8 @@ export { default as NebulaAnimated } from './NebulaAnimated';
 export { default as NebulaCard } from './NebulaCard';
 export { default as NebulaButton } from './NebulaButton';
 export { default as NebulaText } from './NebulaText';
+export { default as SplashScreen } from './SplashScreen';
+export { default as TransitionSplash } from './TransitionSplash';
 
 // Legacy components (can be gradually replaced)
 export { default as Button } from './Button';

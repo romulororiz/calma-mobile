@@ -10,7 +10,9 @@ import {
   NebulaCard,
   NebulaButton,
   NebulaText,
+  SplashScreen,
 } from '../../components/core';
+import { authService } from '../../services/auth';
 import NavHeader from '../../components/core/NavHeader';
 import CalmaLogo from '../../components/core/CalmaLogo';
 
@@ -18,22 +20,99 @@ const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    // Handle login logic
+    setIsLoggingIn(true);
+
+    try {
+      const { data, error } = await authService.signIn(email, password);
+
+      if (error) {
+        console.error('Login error:', error);
+        setIsLoggingIn(false);
+        // TODO: Show error message to user
+        return;
+      }
+
+      // Success - splash will handle navigation
+    } catch (error) {
+      console.error('Login failed:', error);
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setIsLoggingIn(true);
+
+    try {
+      const { data, error } = await authService.signInWithGoogle();
+
+      if (error) {
+        console.error('Google login error:', error);
+        setIsLoggingIn(false);
+        return;
+      }
+
+      // Success - splash will handle navigation
+    } catch (error) {
+      console.error('Google login failed:', error);
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setIsLoggingIn(true);
+
+    try {
+      const { data, error } = await authService.signInWithApple();
+
+      if (error) {
+        console.error('Apple login error:', error);
+        setIsLoggingIn(false);
+        return;
+      }
+
+      // Success - splash will handle navigation
+    } catch (error) {
+      console.error('Apple login failed:', error);
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleSplashComplete = () => {
+    // Navigate after splash animation completes
     navigation.navigate('Main' as never);
+    setIsLoggingIn(false);
   };
 
   const handleSocialLogin = (provider: 'apple' | 'google') => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // Handle social login
+    if (provider === 'google') {
+      handleGoogleLogin();
+    } else if (provider === 'apple') {
+      handleAppleLogin();
+    }
   };
 
   const handleForgotPassword = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     // Navigate to forgot password
   };
+
+  if (isLoggingIn) {
+    return (
+      <SplashScreen
+        variant="auth"
+        duration={2000} // 2 seconds for login transition
+        onAnimationComplete={handleSplashComplete}
+        showLogo={true}
+        showText={true}
+      />
+    );
+  }
 
   return (
     <NebulaGradient variant="background" style={{ flex: 1 }}>
@@ -210,4 +289,3 @@ const LoginScreen: React.FC = () => {
 };
 
 export default LoginScreen;
- 

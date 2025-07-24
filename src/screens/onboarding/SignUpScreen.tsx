@@ -143,9 +143,10 @@ const SignUpScreen: React.FC = () => {
                     style={{
                       borderRadius: 12,
                       borderWidth: 1,
-                      borderColor: password && confirmPassword && password !== confirmPassword 
-                        ? 'rgba(255, 100, 100, 0.3)' 
-                        : 'rgba(255, 255, 255, 0.1)',
+                      borderColor:
+                        password && confirmPassword && password !== confirmPassword
+                          ? 'rgba(255, 100, 100, 0.3)'
+                          : 'rgba(255, 255, 255, 0.1)',
                       backgroundColor: 'rgba(255, 255, 255, 0.05)',
                       paddingHorizontal: 18,
                       paddingVertical: 14,
@@ -155,7 +156,10 @@ const SignUpScreen: React.FC = () => {
                     }}
                   />
                   {password && confirmPassword && password !== confirmPassword && (
-                    <NebulaText size="xs" variant="tertiary" style={{ marginTop: 5, marginLeft: 5 }}>
+                    <NebulaText
+                      size="xs"
+                      variant="tertiary"
+                      style={{ marginTop: 5, marginLeft: 5 }}>
                       Passwords don&apos;t match
                     </NebulaText>
                   )}
@@ -258,4 +262,4 @@ const SignUpScreen: React.FC = () => {
   );
 };
 
-export default SignUpScreen; 
+export default SignUpScreen;

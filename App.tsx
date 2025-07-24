@@ -1,6 +1,5 @@
 import './global.css';
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from 'react';
 import {
   useFonts,
   Poppins_300Light,
@@ -10,8 +9,11 @@ import {
 } from '@expo-google-fonts/poppins';
 
 import RootNavigator from './src/navigation/RootNavigator';
+import { SplashScreen } from './src/components/core';
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
   let [fontsLoaded] = useFonts({
     Poppins_300Light,
     Poppins_400Regular,
@@ -19,11 +21,19 @@ export default function App() {
     Poppins_700Bold,
   });
 
-  if (!fontsLoaded) {
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
+
+  if (!fontsLoaded || showSplash) {
     return (
-      <View className="bg-deep-space flex-1 items-center justify-center">
-        <Text className="text-lg text-text-primary">Loading Calma...</Text>
-      </View>
+      <SplashScreen
+        variant="loading"
+        duration={3000} // 3 seconds - adjust this to your preference!
+        onAnimationComplete={fontsLoaded ? handleSplashComplete : undefined}
+        showLogo={true}
+        showText={true}
+      />
     );
   }
 
