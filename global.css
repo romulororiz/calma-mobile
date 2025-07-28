@@ -1,0 +1,590 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* ================================
+   CALMA NEBULA CALM DESIGN SYSTEM
+   ================================ */
+
+/* CSS Custom Properties - Design Tokens */
+:root {
+  /* Nebula Gradient System - Cosmic & Embracing */
+  --nebula-purple: #6a5acd; /* Primary accent - softer slate blue */
+  --cosmic-pink: #db7093; /* Mid-tone - muted palevioletred */
+  --starlight-gold: #ffd700; /* End accent - warm gold */
+  --deep-space: #0a0a1f; /* Background start - deep indigo */
+  --void-black: #000000; /* Background end - true black */
+  --cosmic-mist: #4b0082; /* Accent mist - indigo overlay */
+
+  /* Enhanced Surface Colors with Higher Blur */
+  --surface-glass: rgba(255, 255, 255, 0.05); /* Increased opacity for better visibility */
+  --surface-glass-elevated: rgba(255, 255, 255, 0.08);
+  --surface-primary: rgba(106, 90, 205, 0.08); /* Nebula purple with transparency */
+  --surface-secondary: rgba(106, 90, 205, 0.12);
+  --surface-cosmic: rgba(219, 112, 147, 0.06); /* Cosmic pink surface */
+  --surface-emergency: rgba(255, 69, 0, 0.08); /* Softer emergency red */
+  --surface-success: rgba(50, 205, 50, 0.08); /* Success green surface */
+
+  /* High-Contrast Text Hierarchy for ADHD */
+  --text-primary: #ffffff; /* Pure white for maximum contrast */
+  --text-secondary: #d3d3d3; /* Light gray - 80% opacity equivalent */
+  --text-tertiary: #a9a9a9; /* Medium gray - 60% opacity equivalent */
+  --text-quaternary: #808080; /* Darker gray - 40% opacity equivalent */
+  --text-muted: #696969; /* Subtle text for less important info */
+
+  /* Softer Semantic Colors for Calm */
+  --semantic-success: #32cd32; /* Lime green - warmer than previous */
+  --semantic-warning: #ffd700; /* Gold - matches starlight theme */
+  --semantic-error: #ff4500; /* Orange-red - less harsh than pure red */
+  --semantic-info: #4169e1; /* Royal blue - confident but calm */
+
+  /* Positive Energy Level Colors */
+  --energy-high: #90ee90; /* Light green - encouraging */
+  --energy-medium: #ffd700; /* Gold - balanced */
+  --energy-low: #ff7f50; /* Coral - warm, not alarming */
+
+  /* Enhanced Spacing System (10px base unit for more whitespace) */
+  --space-unit: 10px;
+  --space-xs: 5px; /* 0.5 * unit */
+  --space-sm: 10px; /* 1 * unit */
+  --space-md: 20px; /* 2 * unit */
+  --space-lg: 30px; /* 3 * unit */
+  --space-xl: 50px; /* 5 * unit */
+  --space-2xl: 80px; /* 8 * unit */
+  --space-3xl: 120px; /* 12 * unit for hero sections */
+
+  /* Poppins Typography Scale */
+  --font-xs: 12px; /* Labels */
+  --font-sm: 14px; /* Body text */
+  --font-base: 16px; /* Default */
+  --font-lg: 20px; /* Headings */
+  --font-xl: 24px; /* Titles */
+  --font-2xl: 32px; /* Hero text */
+  --font-3xl: 40px; /* Display text */
+
+  /* Poppins Font Weights */
+  --font-light: 300; /* Airy, spacious feel */
+  --font-regular: 400; /* Standard body */
+  --font-medium: 500; /* Emphasis */
+  --font-bold: 700; /* Strong emphasis */
+
+  /* Enhanced Line Heights for Readability */
+  --line-tight: 1.3; /* Compact */
+  --line-normal: 1.5; /* Standard */
+  --line-relaxed: 1.6; /* Comfortable reading */
+  --line-loose: 1.8; /* Maximum comfort */
+
+  /* Letter Spacing for Breathing Room */
+  --letter-tight: -0.01em;
+  --letter-normal: 0;
+  --letter-wide: 0.025em; /* Slight breathing room */
+  --letter-wider: 0.05em; /* More spacious */
+
+  /* Organic Border Radius for Embracing Feel */
+  --radius-xs: 8px;
+  --radius-sm: 16px;
+  --radius-md: 24px; /* Increased for softer feel */
+  --radius-lg: 32px; /* Organic, embracing */
+  --radius-xl: 40px; /* Large elements */
+  --radius-full: 9999px; /* Pills and circles */
+
+  /* Gentle Animation Durations */
+  --duration-fast: 300ms; /* Quick interactions */
+  --duration-normal: 400ms; /* Standard transitions */
+  --duration-slow: 600ms; /* Gentle, calming */
+  --duration-breathe: 5000ms; /* Nebula breathe effect */
+
+  /* Natural Animation Easing */
+  --easing-natural: cubic-bezier(0.22, 1, 0.36, 1); /* Smooth, natural */
+  --easing-gentle: cubic-bezier(0.25, 0.1, 0.25, 1); /* Gentle acceleration */
+  --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Playful bounce */
+
+  /* Enhanced Shadows and Glows */
+  --shadow-nebula: 0 0 20px rgba(106, 90, 205, 0.1);
+  --shadow-cosmic: 0 0 30px rgba(219, 112, 147, 0.15);
+  --shadow-starlight: 0 0 25px rgba(255, 215, 0, 0.1);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.15);
+  --shadow-strong: 0 15px 40px rgba(0, 0, 0, 0.2);
+
+  /* Touch Target Sizes for ADHD-Friendly Interactions */
+  --touch-target: 60px; /* Minimum touch target */
+  --touch-comfortable: 72px; /* Comfortable size */
+  --touch-large: 88px; /* Large, easy to hit */
+
+  /* Backdrop Blur Values */
+  --blur-subtle: 8px;
+  --blur-medium: 16px;
+  --blur-strong: 24px;
+  --blur-intense: 32px;
+}
+
+/* ================================
+   BASE STYLES (React Native Compatible)
+   ================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    'Poppins',
+    -apple-system,
+    BlinkMacSystemFont,
+    'SF Pro Display',
+    'Segoe UI',
+    sans-serif;
+  background: radial-gradient(ellipse at center, var(--deep-space) 0%, var(--void-black) 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  line-height: var(--line-relaxed);
+  min-height: 100vh;
+  font-weight: var(--font-regular);
+  letter-spacing: var(--letter-wide);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle star field effect for cosmic feel */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.1), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.05), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.08), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.03), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255, 255, 255, 0.06), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.4;
+  animation: cosmic-drift 120s linear infinite;
+}
+
+@keyframes cosmic-drift {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(-200px);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+}
+
+/* ================================
+   COMPONENT LAYER - TAILWIND COMPONENTS
+   ================================ */
+
+@layer components {
+  /* Nebula Glass Card Components */
+  .nebula-card-base {
+    @apply relative overflow-hidden;
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(var(--blur-medium));
+    transition: all var(--duration-normal) var(--easing-natural);
+  }
+
+  .nebula-card-default {
+    background: var(--surface-glass);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .nebula-card-primary {
+    background: var(--surface-primary);
+    border: 1px solid rgba(106, 90, 205, 0.15);
+    box-shadow: var(--shadow-nebula);
+  }
+
+  .nebula-card-cosmic {
+    background: var(--surface-cosmic);
+    border: 1px solid rgba(219, 112, 147, 0.12);
+    box-shadow: var(--shadow-cosmic);
+  }
+
+  .nebula-card-elevated {
+    background: var(--surface-glass-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-medium);
+  }
+
+  .nebula-card-emergency {
+    background: var(--surface-emergency);
+    border: 1px solid rgba(255, 69, 0, 0.2);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .nebula-card-success {
+    background: var(--surface-success);
+    border: 1px solid rgba(50, 205, 50, 0.2);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Nebula Button Components */
+  .nebula-btn-base {
+    position: relative;
+    min-height: var(--touch-target);
+    min-width: var(--touch-target);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    font-weight: var(--font-medium);
+    letter-spacing: var(--letter-wide);
+    transition: all var(--duration-normal) var(--easing-natural);
+    backdrop-filter: blur(var(--blur-medium));
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .nebula-btn-primary {
+    background: linear-gradient(135deg, var(--nebula-purple), var(--cosmic-pink));
+    color: white;
+    box-shadow: var(--shadow-nebula);
+  }
+
+  .nebula-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-cosmic);
+  }
+
+  .nebula-btn-secondary {
+    background: var(--surface-glass);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .nebula-btn-secondary:hover {
+    background: var(--surface-glass-elevated);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .nebula-btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+  }
+
+  .nebula-btn-ghost:hover {
+    background: var(--surface-glass);
+    color: var(--text-primary);
+  }
+
+  .nebula-btn-emergency {
+    background: linear-gradient(135deg, var(--semantic-error), #ff6347);
+    color: white;
+    box-shadow: var(--shadow-cosmic);
+  }
+
+  /* Size Variants */
+  .nebula-btn-comfortable {
+    min-height: var(--touch-comfortable);
+    min-width: var(--touch-comfortable);
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .nebula-btn-large {
+    min-height: var(--touch-large);
+    min-width: var(--touch-large);
+    padding: var(--space-lg) var(--space-xl);
+  }
+
+  .aurora-btn-sm {
+    @apply px-md py-sm text-sm;
+  }
+
+  .aurora-btn-md {
+    @apply px-lg py-md text-base;
+  }
+
+  .aurora-btn-lg {
+    @apply px-xl py-md text-lg;
+  }
+
+  /* Emotion Button Components */
+  .emotion-btn-base {
+    @apply w-22 h-22 relative flex items-center justify-center overflow-hidden rounded-lg border-2 border-transparent bg-surface-glass;
+  }
+
+  .emotion-btn-selected {
+    @apply border-aurora-start/30 bg-gradient-to-br from-aurora-start to-aurora-mid;
+  }
+
+  /* Context Pill Components */
+  .context-pill-base {
+    @apply min-h-touch flex-row items-center rounded-full border border-white/5 bg-surface-glass px-md py-sm text-sm;
+  }
+
+  .context-pill-selected {
+    @apply border-transparent bg-gradient-to-r from-aurora-start to-aurora-mid text-white;
+  }
+
+  /* Navigation Components */
+  .nav-item-base {
+    @apply relative min-h-touch-comfortable flex-col items-center justify-center rounded-md p-sm;
+  }
+
+  .nav-item-active {
+    @apply text-text-primary;
+  }
+
+  .nav-item-inactive {
+    @apply text-text-tertiary;
+  }
+
+  /* Emergency Card Components */
+  .emergency-card-base {
+    @apply border-aurora-mid/20 relative min-h-touch-large w-full flex-row items-center overflow-hidden rounded-lg border bg-surface-emergency p-lg;
+  }
+
+  /* Pattern Graph Components */
+  .energy-bar-base {
+    @apply relative min-h-[10%] flex-1 rounded-t-sm bg-surface-glass;
+  }
+
+  .energy-bar-low {
+    @apply bg-energy-low/80;
+  }
+
+  .energy-bar-medium {
+    @apply bg-energy-medium/80;
+  }
+
+  .energy-bar-high {
+    @apply bg-energy-high/80;
+  }
+
+  /* Reality Check Components */
+  .reality-check-base {
+    @apply flex-row items-start rounded-md border border-semantic-success/10 bg-semantic-success/5 p-md text-sm;
+  }
+
+  .check-icon-base {
+    @apply flex h-6 w-6 items-center justify-center rounded-full bg-semantic-success/20 text-sm font-semibold text-energy-high;
+  }
+}
+
+/* ================================
+   UTILITIES LAYER - CUSTOM UTILITIES
+   ================================ */
+
+@layer utilities {
+  /* Nebula Text Gradients */
+  .text-nebula {
+    background: linear-gradient(135deg, var(--nebula-purple), var(--cosmic-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-cosmic {
+    background: linear-gradient(135deg, var(--cosmic-pink), var(--starlight-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-starlight {
+    background: linear-gradient(135deg, var(--starlight-gold), var(--nebula-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Background Utilities */
+  .bg-nebula-gradient {
+    background: linear-gradient(135deg, var(--nebula-purple), var(--cosmic-pink));
+  }
+
+  .bg-cosmic-gradient {
+    background: linear-gradient(135deg, var(--cosmic-pink), var(--starlight-gold));
+  }
+
+  .bg-starlight-gradient {
+    background: linear-gradient(135deg, var(--starlight-gold), var(--nebula-purple));
+  }
+
+  .bg-deep-space {
+    background: radial-gradient(ellipse at center, var(--deep-space) 0%, var(--void-black) 100%);
+  }
+
+  .bg-glass-effect {
+    background: var(--surface-glass);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(var(--blur-medium));
+  }
+
+  .bg-glass-elevated {
+    background: var(--surface-glass-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(var(--blur-strong));
+  }
+
+  .bg-emergency-surface {
+    background: var(--surface-emergency);
+    border: 1px solid rgba(255, 69, 0, 0.2);
+  }
+
+  .bg-success-surface {
+    background: var(--surface-success);
+    border: 1px solid rgba(50, 205, 50, 0.2);
+  }
+
+  /* ADHD-Friendly Utilities */
+  .adhd-spacing {
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  .adhd-touch-target {
+    min-height: var(--touch-target);
+    min-width: var(--touch-target);
+  }
+
+  .adhd-touch-comfortable {
+    min-height: var(--touch-comfortable);
+    min-width: var(--touch-comfortable);
+  }
+
+  .adhd-touch-large {
+    min-height: var(--touch-large);
+    min-width: var(--touch-large);
+  }
+
+  /* Enhanced Safe Area Utilities */
+  .safe-area-padding {
+    padding-left: max(var(--space-lg), env(safe-area-inset-left));
+    padding-right: max(var(--space-lg), env(safe-area-inset-right));
+    padding-bottom: max(var(--space-lg), env(safe-area-inset-bottom));
+  }
+
+  .safe-area-insets {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Natural Animation Utilities */
+  .transition-natural {
+    transition: all var(--duration-normal) var(--easing-natural);
+  }
+
+  .transition-gentle {
+    transition: all var(--duration-slow) var(--easing-gentle);
+  }
+
+  .transition-bounce {
+    transition: all var(--duration-normal) var(--easing-bounce);
+  }
+
+  .transition-fast {
+    transition: all var(--duration-fast) var(--easing-natural);
+  }
+
+  /* Glow Effects */
+  .glow-nebula {
+    box-shadow: var(--shadow-nebula);
+  }
+
+  .glow-cosmic {
+    box-shadow: var(--shadow-cosmic);
+  }
+
+  .glow-starlight {
+    box-shadow: var(--shadow-starlight);
+  }
+
+  /* Breathing Animation */
+  .animate-nebula-breathe {
+    animation: nebula-breathe var(--duration-breathe) ease-in-out infinite;
+  }
+
+  @keyframes nebula-breathe {
+    0%,
+    100% {
+      transform: scale(0.98);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.02);
+      opacity: 1;
+    }
+  }
+
+  /* Floating Animation */
+  .animate-cosmic-float {
+    animation: cosmic-float 4s ease-in-out infinite;
+  }
+
+  @keyframes cosmic-float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  /* Gentle Pulse */
+  .animate-gentle-pulse {
+    opacity: 1;
+  }
+}
+
+/* ================================
+   ACCESSIBILITY & RESPONSIVE
+   ================================ */
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass-card-base {
+    border-width: 2px;
+  }
+
+  .aurora-btn-base {
+    border-width: 2px;
+  }
+}
+
+/* Touch-friendly sizing for mobile */
+@media (hover: none) {
+  .emotion-btn-base {
+    @apply h-24 w-24;
+  }
+
+  .context-pill-base {
+    @apply min-h-touch-comfortable px-lg py-md;
+  }
+
+  .nav-item-base {
+    @apply min-h-touch-large;
+  }
+}
