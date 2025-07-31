@@ -41,6 +41,12 @@ const mainNavigationTabs = [
     gradient: ['#F59E0B', '#10B981'],
   },
   {
+    id: 'emergency',
+    icon: ICON_NAMES.EMERGENCY,
+    label: 'SOS',
+    gradient: ['#EC4899', '#EF4444'],
+  },
+  {
     id: 'settings',
     icon: ICON_NAMES.SETTINGS,
     label: 'Settings',

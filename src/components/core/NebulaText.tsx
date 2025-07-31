@@ -8,7 +8,7 @@ interface NebulaTextProps {
   variant?: 'primary' | 'secondary' | 'tertiary' | 'muted';
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl';
   weight?: 'light' | 'regular' | 'medium' | 'bold';
-  gradient?: 'nebula' | 'cosmic' | 'starlight' | null;
+  gradient?: 'nebula' | 'cosmic' | 'starlight' | 'orangeToPink' | null;
   style?: TextStyle;
   className?: string;
   align?: 'left' | 'center' | 'right';
@@ -42,10 +42,10 @@ const NebulaText: React.FC<NebulaTextProps> = ({
   };
 
   const weightMap = {
-    light: 'Poppins_300Light',
-    regular: 'Poppins_400Regular',
-    medium: 'Poppins_500Medium',
-    bold: 'Poppins_700Bold',
+    light: 'Poppins-Light',
+    regular: 'Poppins-Regular',
+    medium: 'Poppins-Medium',
+    bold: 'Poppins-Bold',
   };
 
   const baseStyle: TextStyle = {
@@ -67,7 +67,7 @@ const NebulaText: React.FC<NebulaTextProps> = ({
       <MaskedView
         style={{
           flexDirection: 'row',
-          alignSelf: 'flex-start', // Important: only take needed space
+          alignSelf: align === 'center' ? 'center' : 'flex-start',
         }}
         maskElement={
           <Text style={{ ...baseStyle, color: 'black' }} className={className}>
@@ -78,7 +78,7 @@ const NebulaText: React.FC<NebulaTextProps> = ({
           variant={gradientVariant}
           style={{
             flex: 1,
-            height: sizeMap[size] * 1.5,
+            minHeight: sizeMap[size] * 1.5,
           }}
         />
       </MaskedView>

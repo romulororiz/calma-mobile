@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, ScrollView, TouchableOpacity, Animated, Switch, Dimensions, Alert } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Animated, Switch, Dimensions, Alert, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,6 +14,8 @@ import {
   ICON_NAMES,
 } from '../../components/core';
 import { authService } from '../../services/auth';
+import { profileService } from '../../services/profile';
+import type { UserProfile } from '../../types/auth';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -80,10 +82,20 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [hapticFeedback, setHapticFeedback] = useState(true);
 
+  // Profile state
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [profileError, setProfileError] = useState<string | null>(null);
+
   // Animation references for professional settings effects
   const navAnim = useRef(new Animated.Value(0)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
   const profilePulse = useRef(new Animated.Value(1)).current;
+
+  // Load user profile on mount
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
 
   // Animate navigation and profile effects on mount
   useEffect(() => {
@@ -125,6 +137,68 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
     ]).start();
   }, []);
 
+  // Load user profile from database
+  const loadUserProfile = async () => {
+    try {
+      setIsLoadingProfile(true);
+      setProfileError(null);
+      
+      console.log('📋 Loading user profile...');
+      const profile = await profileService.getCurrentUserProfile();
+      
+      if (profile) {
+        console.log('✅ Profile loaded successfully:', profile);
+        setUserProfile(profile);
+        
+        // Update local state based on profile preferences
+        if (profile.preferences) {
+          setNotificationsEnabled(profile.preferences.notifications ?? true);
+          setHapticFeedback(profile.preferences.accessibility ?? true);
+          setSmartReminders(profile.preferences.reminders ?? true);
+        }
+      } else {
+        console.log('⚠️ No profile found, using default values');
+        setProfileError('Profile not found');
+      }
+    } catch (error) {
+      console.error('❌ Error loading profile:', error);
+      setProfileError('Failed to load profile');
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
+
+  // Get user initials for avatar fallback
+  const getUserInitials = (fullName: string | null): string => {
+    if (!fullName) return '?';
+    
+    const names = fullName.trim().split(' ');
+    if (names.length === 1) {
+      return names[0].charAt(0).toUpperCase();
+    }
+    
+    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+  };
+
+  // Get display name
+  const getDisplayName = (): string => {
+    if (userProfile?.full_name) {
+      return userProfile.full_name;
+    }
+    if (userProfile?.email) {
+      return userProfile.email.split('@')[0];
+    }
+    return 'User';
+  };
+
+  // Get display email
+  const getDisplayEmail = (): string => {
+    if (userProfile?.email) {
+      return userProfile.email;
+    }
+    return 'No email available';
+  };
+
   const handleTabPress = (tab: (typeof navigationTabs)[0]) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setActiveTab(tab.id);
@@ -147,24 +221,71 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
     }
   };
 
-  const handleToggle = (setting: string) => {
+  const handleToggle = async (setting: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    switch (setting) {
-      case 'reminders':
-        setSmartReminders(!smartReminders);
-        break;
-      case 'focus':
-        setFocusMode(!focusMode);
-        break;
-      case 'sync':
-        setCloudSync(!cloudSync);
-        break;
-      case 'notifications':
-        setNotificationsEnabled(!notificationsEnabled);
-        break;
-      case 'haptic':
-        setHapticFeedback(!hapticFeedback);
-        break;
+    
+    try {
+      let newValue: boolean;
+      
+      switch (setting) {
+        case 'reminders':
+          newValue = !smartReminders;
+          setSmartReminders(newValue);
+          break;
+        case 'focus':
+          newValue = !focusMode;
+          setFocusMode(newValue);
+          break;
+        case 'sync':
+          newValue = !cloudSync;
+          setCloudSync(newValue);
+          break;
+        case 'notifications':
+          newValue = !notificationsEnabled;
+          setNotificationsEnabled(newValue);
+          break;
+        case 'haptic':
+          newValue = !hapticFeedback;
+          setHapticFeedback(newValue);
+          break;
+        default:
+          return;
+      }
+
+      // Update preferences in database
+      if (userProfile) {
+        const updatedPreferences = {
+          ...userProfile.preferences,
+          notifications: setting === 'notifications' ? newValue : userProfile.preferences?.notifications,
+          accessibility: setting === 'haptic' ? newValue : userProfile.preferences?.accessibility,
+          reminders: setting === 'reminders' ? newValue : userProfile.preferences?.reminders,
+        };
+
+        const result = await profileService.updateUserPreferences(userProfile.id, updatedPreferences);
+        if (!result.success) {
+          console.error('❌ Failed to update preferences:', result.error);
+          // Revert local state on failure
+          switch (setting) {
+            case 'reminders':
+              setSmartReminders(!newValue);
+              break;
+            case 'focus':
+              setFocusMode(!newValue);
+              break;
+            case 'sync':
+              setCloudSync(!newValue);
+              break;
+            case 'notifications':
+              setNotificationsEnabled(!newValue);
+              break;
+            case 'haptic':
+              setHapticFeedback(!newValue);
+              break;
+          }
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error updating setting:', error);
     }
   };
 
@@ -505,6 +626,127 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
     </NebulaAnimated>
   );
 
+  // Render profile header with loading and error states
+  const renderProfileHeader = () => {
+    if (isLoadingProfile) {
+      return (
+        <NebulaAnimated animation="fadeIn" duration={800} delay={200} iterationCount={1}>
+          <NebulaAnimated animation="slideUp" duration={600} delay={400} iterationCount={1}>
+            <View style={{ marginBottom: 40, alignItems: 'center' }}>
+              <View
+                style={{
+                  width: 160,
+                  height: 160,
+                  borderRadius: 80,
+                  backgroundColor: 'rgba(159, 122, 234, 0.1)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 16,
+                  borderWidth: 3,
+                  borderColor: 'rgba(159, 122, 234, 0.2)',
+                }}>
+                <NebulaText size="3xl" variant="tertiary">⋯</NebulaText>
+              </View>
+              <NebulaText size="lg" variant="secondary" style={{ marginBottom: 4 }}>
+                Loading profile...
+              </NebulaText>
+            </View>
+          </NebulaAnimated>
+        </NebulaAnimated>
+      );
+    }
+
+    if (profileError) {
+      return (
+        <NebulaAnimated animation="fadeIn" duration={800} delay={200} iterationCount={1}>
+          <NebulaAnimated animation="slideUp" duration={600} delay={400} iterationCount={1}>
+            <View style={{ marginBottom: 40, alignItems: 'center' }}>
+              <TouchableOpacity
+                onPress={loadUserProfile}
+                activeOpacity={0.8}
+                style={{
+                  width: 160,
+                  height: 160,
+                  borderRadius: 80,
+                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 16,
+                  borderWidth: 3,
+                  borderColor: 'rgba(239, 68, 68, 0.2)',
+                }}>
+                <Icon name="profile" size={48} color="#EF4444" />
+              </TouchableOpacity>
+              <NebulaText size="lg" variant="secondary" style={{ marginBottom: 4 }}>
+                Failed to load profile
+              </NebulaText>
+              <TouchableOpacity onPress={loadUserProfile}>
+                <NebulaText size="sm" style={{ color: '#9F7AEA' }}>
+                  Tap to retry
+                </NebulaText>
+              </TouchableOpacity>
+            </View>
+          </NebulaAnimated>
+        </NebulaAnimated>
+      );
+    }
+
+    return (
+      <NebulaAnimated animation="fadeIn" duration={800} delay={200} iterationCount={1}>
+        <NebulaAnimated animation="slideUp" duration={600} delay={400} iterationCount={1}>
+          <View style={{ marginBottom: 40, alignItems: 'center' }}>
+            <Animated.View
+              style={{
+                transform: [{ scale: profilePulse }],
+              }}>
+              <TouchableOpacity
+                onPress={loadUserProfile}
+                activeOpacity={0.8}
+                style={{
+                  width: 160,
+                  height: 160,
+                  borderRadius: 80,
+                  backgroundColor: 'rgba(159, 122, 234, 0.2)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 16,
+                  borderWidth: 3,
+                  borderColor: 'rgba(159, 122, 234, 0.3)',
+                  overflow: 'hidden',
+                }}>
+                {userProfile?.avatar_url ? (
+                  <Image
+                    source={{ uri: userProfile.avatar_url }}
+                    style={{
+                      width: 154,
+                      height: 154,
+                      borderRadius: 77,
+                    }}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <NebulaText size="3xl" weight="bold" style={{ color: '#9F7AEA' }}>
+                    {getUserInitials(userProfile?.full_name)}
+                  </NebulaText>
+                )}
+              </TouchableOpacity>
+            </Animated.View>
+            <NebulaText
+              size="2xl"
+              weight="bold"
+              variant="primary"
+              style={{ marginBottom: 4 }}>
+              {getDisplayName()}
+            </NebulaText>
+            <NebulaText size="base" variant="secondary">
+              {getDisplayEmail()}
+            </NebulaText>
+          </View>
+        </NebulaAnimated>
+      </NebulaAnimated>
+    );
+  };
+
   return (
     <NebulaGradient variant="background" style={{ flex: 1 }}>
         <ScrollView
@@ -516,51 +758,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
           }}
           showsVerticalScrollIndicator={false}>
           {/* Profile Header */}
-          <NebulaAnimated animation="fadeIn" duration={800} delay={200} iterationCount={1}>
-            <NebulaAnimated animation="slideUp" duration={600} delay={400} iterationCount={1}>
-              <Animated.View
-                style={{
-                  marginBottom: 40,
-                  alignItems: 'center',
-                  transform: [{ scale: profilePulse }],
-                }}>
-                <NebulaCard
-                  variant="primary"
-                  style={{
-                    padding: 30,
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(159, 122, 234, 0.08)',
-                    borderColor: 'rgba(159, 122, 234, 0.2)',
-                    borderWidth: 1,
-                  }}>
-                  <View
-                    style={{
-                      width: 96,
-                      height: 96,
-                      borderRadius: 48,
-                      backgroundColor: 'rgba(159, 122, 234, 0.2)',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: 16,
-                      borderWidth: 3,
-                      borderColor: 'rgba(159, 122, 234, 0.3)',
-                    }}>
-                    <NebulaText size="3xl">👩</NebulaText>
-                  </View>
-                  <NebulaText
-                    size="2xl"
-                    weight="bold"
-                    variant="primary"
-                    style={{ marginBottom: 4 }}>
-                    Ana Silva
-                  </NebulaText>
-                  <NebulaText size="base" variant="secondary">
-                    ana@example.com
-                  </NebulaText>
-                </NebulaCard>
-              </Animated.View>
-            </NebulaAnimated>
-          </NebulaAnimated>
+          {renderProfileHeader()}
 
           {/* ADHD Preferences */}
           {renderSection('ADHD Preferences', adhdSettings, 'brain', 600)}

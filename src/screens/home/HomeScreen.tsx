@@ -192,7 +192,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ hideNavigation = false, navigat
             <NebulaAnimated animation="slideUp" duration={600} delay={500} iterationCount={1}>
               <View style={{ marginBottom: 30 }}>
                 <NebulaText
-                  size="2xl"
+                  size="xl"
                   weight="bold"
                   variant="primary"
                   align="center"
@@ -215,7 +215,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ hideNavigation = false, navigat
                   weight="bold"
                   variant="primary"
                   style={{ marginBottom: 12, height: 40 }}
-                  gradient="starlight">
+                  gradient="nebula">
                   Your energy peaks at 2 PM today
                 </NebulaText>
                 <NebulaText size="sm" variant="secondary" style={{ lineHeight: 24 }}>
@@ -237,33 +237,61 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ hideNavigation = false, navigat
                 }}>
                 <View style={{ flex: 1 }}>
                   <NebulaCard
-                    variant="default"
-                    style={{ alignItems: 'center', paddingVertical: 25, paddingHorizontal: 20 }}>
+                    variant="primary"
+                    style={{ 
+                      alignItems: 'center', 
+                      paddingVertical: 28, 
+                      paddingHorizontal: 20,
+                      position: 'relative',
+                    }}>
+                    {/* Icon overlay */}
+                    <View style={{
+                      position: 'absolute',
+                      top: 12,
+                      right: 12,
+                      opacity: 0.3,
+                    }}>
+                      <Icon name="fire" size={30}/>
+                    </View>
                     <NebulaText
-                      size="2xl"
+                      size="3xl"
                       weight="bold"
-                      gradient="nebula"
-                      style={{ marginBottom: 4 }}>
+                      gradient="cosmic"
+                      style={{ marginBottom: 6, alignSelf: 'center' }}>
                       7
                     </NebulaText>
-                    <NebulaText size="sm" variant="tertiary">
+                    <NebulaText size="sm" variant="secondary" style={{ fontWeight: '600' }}>
                       Day Streak
                     </NebulaText>
                   </NebulaCard>
                 </View>
                 <View style={{ flex: 1 }}>
                   <NebulaCard
-                    variant="default"
-                    style={{ alignItems: 'center', paddingVertical: 25, paddingHorizontal: 20 }}>
+                    variant="cosmic"
+                    style={{ 
+                      alignItems: 'center', 
+                      paddingVertical: 28, 
+                      paddingHorizontal: 20,
+                      position: 'relative',
+                    }}>
+                    {/* Icon overlay */}
+                    <View style={{
+                      position: 'absolute',
+                      top: 12,
+                      right: 12,
+                      opacity: 0.3,
+                    }}>
+                      <Icon name="trending-up" size={30}/>
+                    </View>
                     <NebulaText
-                      size="2xl"
+                      size="3xl"
                       weight="bold"
-                      gradient="nebula"
-                      style={{ marginBottom: 4 }}>
+                      gradient="cosmic"
+                      style={{ marginBottom: 6, alignSelf: 'center' }}>
                       85%
                     </NebulaText>
-                    <NebulaText size="sm" variant="tertiary">
-                      Mood Trend ↗
+                    <NebulaText size="sm" variant="secondary" style={{ fontWeight: '600' }}>
+                      Mood Trend
                     </NebulaText>
                   </NebulaCard>
                 </View>
@@ -344,41 +372,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ hideNavigation = false, navigat
             </NebulaAnimated>
           </NebulaAnimated>
         </ScrollView>
-
-        {/* Floating Emergency Button */}
-        <TouchableOpacity
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-            if (navigateToScreen) {
-              navigateToScreen('emergency');
-            } else {
-              navigation.navigate('Emergency' as never);
-            }
-          }}
-          activeOpacity={0.8}
-          style={{
-            position: 'absolute',
-            top: 20,
-            right: 10,
-            width: 56,
-            height: 56,
-            borderRadius: 28,
-            backgroundColor: 'rgba(236, 72, 153, 0.15)',
-            borderWidth: 2,
-            borderColor: 'rgba(236, 72, 153, 0.3)',
-            alignItems: 'center',
-            justifyContent: 'center',
-            shadowColor: '#EC4899',
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.3,
-            shadowRadius: 16,
-          }}>
-          <Icon 
-            name={ICON_NAMES.EMERGENCY}
-            size={24}
-            color="#FFFFFF"
-          />
-        </TouchableOpacity>
     </NebulaGradient>
   );
 };

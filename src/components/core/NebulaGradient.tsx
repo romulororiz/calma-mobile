@@ -32,7 +32,7 @@ const NebulaGradient: React.FC<NebulaGradientProps> = ({
       end: { x: 1, y: 1 },
     },
     background: {
-      colors: ['#0A0A1F', '#000000'], // Deep space to void black
+      colors: ['#1A1A2F', '#000000'], // Lighter deep space to void black
       start: { x: 0, y: 0 },
       end: { x: 0, y: 1 },
     },

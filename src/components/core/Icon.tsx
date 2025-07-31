@@ -86,6 +86,8 @@ export type IconName =
   | 'energy'         // 💪
   | 'meditation'     // 🧘‍♀️
   | 'logout'         // 🚪
+  | 'fire'           // 🔥
+  | 'trending-up'    // ↗
 
 interface IconProps {
   name: IconName;
@@ -171,9 +173,11 @@ const iconMap: Record<IconName, {
   text: { component: Feather, name: 'message-square' },
   book: { component: Feather, name: 'book' },
   star: { component: Feather, name: 'star' },
+  fire: { component: MaterialIcons, name: 'whatshot' },
+  'trending-up': { component: MaterialIcons, name: 'trending-up' },
   notification: { component: Feather, name: 'bell' },
   moon: { component: Feather, name: 'moon' },
-  palette: { component: Feather, name: 'palette' },
+  palette: { component: MaterialIcons, name: 'palette' },
   smartphone: { component: Feather, name: 'smartphone' },
   cloud: { component: Feather, name: 'cloud' },
   haptic: { component: Feather, name: 'smartphone' },
